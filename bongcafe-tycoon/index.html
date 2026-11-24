@@ -173,10 +173,6 @@ table.it td.wrap{white-space:normal}
 .stg.two .stt b{font-size:22px}
 .stt span{display:block;font-size:10.5px;color:var(--dim);line-height:1.35}
 .stop{display:flex;gap:10px;align-items:flex-start}
-/* 내 프로필: 개인식별번호 · 상품 코드 */
-.pidb{display:flex;align-items:center;gap:8px;background:#0d1110;box-shadow:inset 0 0 0 1px var(--gold);border-radius:8px;padding:8px 10px}.pidb b{flex:1;font-size:20px;letter-spacing:.08em;color:var(--gold);font-variant-numeric:tabular-nums;user-select:all;-webkit-user-select:all;white-space:nowrap}
-.codeb{display:flex;gap:6px;align-items:stretch}.codeb input{flex:1;min-width:0;box-sizing:border-box;font:inherit;font-size:16px;letter-spacing:.04em;text-transform:uppercase;padding:9px 10px;background:#101312;color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:6px}.codeb input::placeholder{text-transform:none;letter-spacing:0;color:#6f7975}.codeb input:focus{outline:none;border-color:var(--acc)}.codeb .btn{flex:none}
-.codem{margin:8px 0 0;padding:7px 10px;border-radius:6px;font-weight:700;font-size:13.5px}.codem.ok{background:var(--accT);color:var(--acc)}.codem.no{background:rgba(255,93,115,.12);color:#ff8fa0}
 /* 업적 뱃지 */
 .achg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
 .achc{position:relative;border:0;color:inherit;font:inherit;background:#101312;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);border-radius:10px;padding:8px 5px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:0}
@@ -558,7 +554,7 @@ body.nofx :not(#mine,#mine *),body.nofx :not(#mine *)::before,body.nofx :not(#mi
 <div id="alm"></div><div id="almT" class="cut"><span></span><button class="btn pri" id="almOk">확인</button></div>
 <script>
 'use strict';
-const VER='0.19.0',VTAG='Beta ',VLBL=VTAG+'v'+VER,KEY='bongcafe-tycoon-v1',TICK_MAX=90;
+const VER='0.19.1',VTAG='Beta ',VLBL=VTAG+'v'+VER,KEY='bongcafe-tycoon-v1',TICK_MAX=90;
 /* 그림 주소 바꿔치기: 보통은 img/ 폴더의 파일을 그대로 쓴다. 파일 하나짜리 판(체험판, src/build_trial.py)은 그림을 파일 안에 넣고 여기를 채운다. HALT는 체험판이 끝났을 때 게임을 멈추는 스위치 */
 const IMGB=/*IMGB*/null||{},iu=p=>IMGB[p]||p;let HALT=0;
 /* 데모(사용자 지시 2026-11-24: 시간 제한은 없애고 기능 제한을 많이). 정식 빌드는 DEMO=0이라 아무것도 안 바뀐다. src/build_trial.py가 1로 바꾼다.
@@ -1566,53 +1562,6 @@ function achM(id){return()=>{achDefs();const a=AMAP[id];if(!a)return'';const ok=
  return`<h2>${a.f?'🎖️':'🏅'} ${a.n} <span class="tag" style="color:${ACH_TC[a.f?0:a.t]}">${a.f?'실패 훈장':ACH_T[a.t]}</span></h2><div class="achbig ${ok?'':'lk'}">${achSvg(a)}${ok?'':'<b>🔒</b>'}</div><p style="margin:8px 0 0;text-align:center"><b>${a.d}</b></p>
  ${a.g>1||!ok?`<div class="bar" style="margin-top:8px"><i style="width:${Math.round(p*100)}%;background:${ACH_TC[a.f?0:a.t]}"></i></div><p class="sub" style="margin:4px 0 0;text-align:center">${a.g>1?`${achNum(a,Math.min(v,a.g))} / ${achNum(a,a.g)}`:ok?'':'아직 달성하지 못했어요'}</p>`:''}
  <p class="sub" style="margin:8px 0 0;text-align:center">${ok?`${dt.getFullYear()}년 ${dt.getMonth()+1}월 ${dt.getDate()}일에 달성했어요.`:a.f?'실패 훈장은 모으지 않아도 돼요.':'달성하면 뱃지에 색이 들어와요.'}</p><div class="mbtns"><button class="btn pri" data-a="close">닫기</button></div>`}}
-/* 봉다방게임즈 상품 코드 공통 규칙 (고르도 v1.5.1~, 봉다방 같은 방식)
-   - 개인식별번호(pid): 게임 머리글 + 8글자. 고르도 'GD-XXXX-XXXX', 봉다방 'BD-XXXX-XXXX'. 처음 켤 때 한 번 만들어 세이브에 저장.
-   - 상품 코드: '{종류 한 글자}{수량}-{일련 4글자}-{서명 8글자}'  예) M500-7K3Q-9XHD2PAB
-     서명 = gcH(GC_SEC|게임|pid|종류수량|일련) 앞 8글자. pid가 다르면 서명이 달라서 그 사람만 쓸 수 있다.
-   - 한 번 쓴 코드는 세이브(S.codes[일련+서명])에 남아 다시 못 쓴다.
-   - 글자는 크록포드 32진수(0-9, A-Z에서 I L O U 뺌). 입력할 때 O→0, I·L→1로 고쳐 읽는다.
-   - 종류: M = 돈(수량 × 1만원). 다른 종류는 게임마다 정해서 쓴다(모르는 종류면 '이 게임에서 쓸 수 없는 상품').
-   한계: 게임 JS 안에 GC_SEC가 그대로 있어 소스를 뜯어보면 코드를 만들 수 있다(윈도우판은 난독화로 조금 어렵게만 함). */
-const GC_A='0123456789ABCDEFGHJKMNPQRSTVWXYZ',GC_SEC='QITiJRezlaiid0ivH5O7Hk8gBctXAwcG';
-function gcH(str){let h1=0xdeadbeef,h2=0x41c6ce57,h3=0x9e3779b9,h4=0x85ebca6b;for(let i=0;i<str.length;i++){const c=str.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);h3=Math.imul(h3^c,2246822507);h4=Math.imul(h4^c,3266489909);}
- for(let r=0;r<3;r++){h1=Math.imul(h1^(h2>>>16),2246822507)^Math.imul(h3^(h4>>>13),3266489909);h2=Math.imul(h2^(h3>>>16),2246822507)^Math.imul(h4^(h1>>>13),3266489909);h3=Math.imul(h3^(h4>>>16),2246822507)^Math.imul(h1^(h2>>>13),3266489909);h4=Math.imul(h4^(h1>>>16),2246822507)^Math.imul(h2^(h3>>>13),3266489909);}
- let o='';for(const h of [h1,h2,h3,h4]){let v=h>>>0;for(let k=0;k<6;k++){o+=GC_A[v&31];v>>>=5;}}return o;}
-const gcNorm=t=>String(t||'').toUpperCase().replace(/[\s_]+/g,'').replace(/O/g,'0').replace(/[IL]/g,'1');
-const gcRnd=n=>{let o='';const a=new Uint8Array(n);(window.crypto||window.msCrypto).getRandomValues(a);for(const b of a)o+=GC_A[b&31];return o;};
-const gcPid=pre=>pre+'-'+gcRnd(4)+'-'+gcRnd(4);
-const gcSig=(game,pid,ka,ser)=>gcH(GC_SEC+'|'+game+'|'+gcNorm(pid)+'|'+ka+'|'+ser).slice(0,8);
-/* 코드 만들기(관리자 생성기) */
-const gcMake=(game,pid,kind,amt,ser)=>{ser=ser||gcRnd(4);const ka=kind+(+amt);return ka+'-'+ser+'-'+gcSig(game,pid,ka,ser);};
-/* 코드 읽기(게임). 맞으면 {kind,amt,key}, 아니면 null */
-function gcRead(game,pid,code){const m=/^([A-Z])(\d{1,9})-([0-9A-Z]{4})-([0-9A-Z]{8})$/.exec(gcNorm(code));if(!m)return null;const ka=m[1]+m[2];if(gcSig(game,pid,ka,m[3])!==m[4])return null;return {kind:m[1],amt:+m[2],key:m[3]+m[4]};}
-
-/* ---------- 내 프로필: 개인식별번호 + 상품 코드 (0.19.0) ----------
-   규칙은 고르도와 같다(g_giftcode_core.js = wiki-map/admin/giftcode_core.js 를 그대로 복사한 것. 그 파일이 바뀌면 다시 복사한다).
-   - 개인식별번호 'BD-XXXX-XXXX': 세이브(S.pid)와 localStorage(PID_KEY)에 같이 둔다. '처음부터'를 해도, 데모와 정식판을 오가도 같다.
-   - 상품 코드는 그 번호에만 맞고 한 번만 쓴다. 쓴 코드는 세이브(S.codes)와 localStorage(CODE_KEY)에 남긴다(처음부터 해도 다시 못 쓰게).
-   - 종류: M 돈(×1만원) · T 뽑기 티켓 · R 레벨 초기화 티켓 · S 강화석. 모르는 글자는 '이 게임에서 쓸 수 없는 상품'. */
-const GC_GAME='bongcafe',PID_KEY='bongcafe-pid',CODE_KEY='bongcafe-codes',pidOk=p=>typeof p==='string'&&/^BD-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/.test(p);
-function pid(){let p=pidOk(S.pid)?S.pid:'';if(!p){try{p=localStorage.getItem(PID_KEY)||''}catch(e){}if(!pidOk(p))p=gcPid('BD');S.pid=p}try{if(localStorage.getItem(PID_KEY)!==p)localStorage.setItem(PID_KEY,p)}catch(e){}return p}
-const codeLS=()=>{try{const o=JSON.parse(localStorage.getItem(CODE_KEY)||'{}');return o&&typeof o==='object'?o:{}}catch(e){return{}}};
-const GC_ITEMS={M:{n:'돈',e:'💰',f:a=>{const v=a*1e4;S.money+=v;S.stat.m0+=v;return won(v)}},T:{n:'뽑기 티켓',e:'🎟️',f:a=>{S.tk+=a;return a.toLocaleString('ko-KR')+'장'}},R:{n:TK.n,e:'🎫',f:a=>{S.bag[TK.id]=(S.bag[TK.id]||0)+a;return a.toLocaleString('ko-KR')+'장'}},S:{n:STONE.n,e:'💎',f:a=>{S.bag[STONE.id]=(S.bag[STONE.id]||0)+a;return a.toLocaleString('ko-KR')+'개'}}};
-function codeUse(raw){const t=gcNorm(raw);if(!t)return{ok:0,m:'코드를 입력해 주세요.'};const r=gcRead(GC_GAME,pid(),t);
- if(!r)return{ok:0,m:'맞지 않는 코드예요. 글자를 다시 확인해 주세요. 코드는 개인식별번호마다 달라요.'};
- S.codes=S.codes||{};const ls=codeLS();if(S.codes[r.key]||ls[r.key])return{ok:0,m:'이미 사용한 코드예요.'};
- const it=GC_ITEMS[r.kind];if(!it||!(r.amt>0))return{ok:0,m:'이 게임에서 쓸 수 없는 상품이에요.'};
- const got=it.f(r.amt),rec={t:Date.now(),k:r.kind,a:r.amt};S.codes[r.key]=rec;ls[r.key]=rec;try{localStorage.setItem(CODE_KEY,JSON.stringify(ls))}catch(e){}
- addLog(`🎁 상품 코드: ${it.n} ${got}`,'gold');save();return{ok:1,m:`${it.e} ${it.n} ${got} 받았어요!`,it,got}}
-let profMsg=null;
-function profM(){return()=>{const b=members('boss')[0]||'이일원',p=pid(),reg=ACH.filter(a=>!a.f),pm=Math.floor(S.play/60),used=Object.values(S.codes||{}).sort((x,y)=>y.t-x.t);
- return`<h2>👤 내 프로필</h2><div class="stop">${face(b,'','width:76px;height:76px;border-radius:6px;object-fit:cover;background:#1a1f24;box-shadow:0 0 0 3px var(--gold);flex:none')}<p class="sinf"><b>${b} 사장</b> · 카페 Lv.${S.lvl}<br>식구 ${Object.keys(S.staff).length}명 · 켜 둔 시간 ${(pm>=60?Math.floor(pm/60)+'시간 ':'')+pm%60+'분'}<br>누적 수익 ${won(S.earned)}<br>업적 ${reg.filter(a=>S.ach[a.id]).length} / ${reg.length} · 직원 뱃지 ${Object.keys(S.badge).length} / ${CREW.length}</p></div>
- <div class="sec">🪪 개인식별번호</div><div class="pidb"><b>${p}</b><button class="btn mini" data-a="pidcopy">복사</button></div><p class="sub" style="margin:6px 0 0">상품 코드를 받을 때 이 번호를 알려 주세요. 처음부터 다시 해도 바뀌지 않아요.</p>
- <div class="sec">🎁 상품 코드</div><div class="codeb"><input id="codeIn" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="예) T10-7K3Q-9XHD2PAB"><button class="btn pri" data-a="codego">사용</button></div>${profMsg?`<p class="codem ${profMsg.ok?'ok':'no'}">${profMsg.m}</p>`:''}<p class="sub" style="margin:6px 0 0">코드는 내 개인식별번호에만 맞고, 한 번만 쓸 수 있어요.</p>
- ${used.length?`<div class="sec">사용한 코드 ${used.length}개</div><table class="it">${used.slice(0,8).map(u=>{const it=GC_ITEMS[u.k],d=new Date(u.t);return`<tr><td style="text-align:left">${d.getMonth()+1}월 ${d.getDate()}일</td><td style="text-align:left">${it?it.e+' '+it.n:u.k}</td><td style="text-align:right"><b>${u.k==='M'?won(u.a*1e4):u.a.toLocaleString('ko-KR')}</b></td></tr>`}).join('')}</table>`:''}
- <div class="mbtns"><button class="btn" data-a="staff" data-n="${b}">👑 사장 정보</button><button class="btn pri" data-a="close">닫기</button></div>`}}
-function pidCopy(){const p=pid(),ok=()=>toast('📋 개인식별번호를 복사했어요: '+p),old=()=>{try{const t=document.createElement('textarea');t.value=p;t.style.cssText='position:fixed;left:-99px;top:0';document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();ok()}catch(e){toast('복사하지 못했어요. 번호를 직접 적어 주세요: '+p)}};
- try{navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(p).then(ok,old):old()}catch(e){old()}}
-function codeGo(){const el=$('codeIn');if(!el)return;profMsg=codeUse(el.value);if(profMsg.ok)aqFx({e:profMsg.it.e,t:'상품 코드 사용!',s:profMsg.it.n+' '+profMsg.got,soft:1});modal(profM());render()}
-addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target&&e.target.id==='codeIn'){e.preventDefault();codeGo()}});
 /* ---------- 화면 공통 ---------- */
 const $=id=>document.getElementById(id);
 let dirty=0,tab='cafe',ptrDown=0,QUIET=0;
@@ -1922,7 +1871,7 @@ function live(){
  if(tab==='staff'){const sg=staffSig();if(sg!==sigLast&&!ptrDown)render();else document.querySelectorAll('#list [data-wf]').forEach(i=>{const s=S.staff[i.dataset.wf];if(s)setS(i,'width',Math.round(s.fat)+'%')})}
  hud()}
 const NOTES=[
- ['0.19.0',['<b>👤 내 프로필이 생겼어요.</b> 왼쪽 위 사장님 얼굴이나 ≡ 메뉴에서 열어요.','프로필에 <b>개인식별번호</b>(BD-로 시작)가 나와요. 처음부터 다시 해도 바뀌지 않아요.','프로필에서 <b>상품 코드</b>를 입력해 상품을 받을 수 있어요. 코드는 내 개인식별번호에만 맞고 한 번만 쓸 수 있어요.']],
+ ['0.19.1',['Beta v0.19.0에 넣었던 <b>내 프로필 · 개인식별번호 · 상품 코드</b> 기능을 되돌렸어요. 왼쪽 위 사장님 얼굴은 예전처럼 사장 정보를 열어요. 세이브는 그대로예요.']],
  ['0.18.1',['<b>새 버전을 처음 열면 패치노트가 저절로 떠요.</b> 그동안 못 본 지난 버전 소식도 같이 보여 줘요. ≡ 메뉴 > 안내 > 패치노트에서 언제든 다시 볼 수 있어요.','<b>데모에도 새 버전 알림</b>이 떠요. 게임을 켜 둔 동안 새 버전이 나오면 화면 위에 알림이 나오고, 새로고침을 누르면 바로 바뀌어요.']],
  ['0.18.0',['<b>🏅 업적이 생겼어요.</b> 회사 > 업적에서 볼 수 있어요. 업적 74개와 실패 훈장 17개가 있고, 지금까지 한 일은 이미 달성으로 쳐 줘요.','업적마다 <b>뱃지</b>가 있어요. 동 · 은 · 금 · 백금 · 다이아 다섯 등급이고, 등급이 높을수록 테두리가 화려해져요. 누르면 크게 볼 수 있어요.','실패 훈장을 뺀 업적을 전부 모으면 <b>봉다방 마스터</b> 뱃지를 받아요.','직원 대사가 늘었어요. <b>카피야하 · 야하</b>, 그리고 황동만 · 이일원 · 박대갈의 입버릇이 생겼어요. 도감 창에서도 볼 수 있어요.']],
  ['0.17.0',['<b>🏅 봉카페 뱃지</b>: 직원을 <b>최고 레벨(Lv.90)</b>까지 키우면 그 직원의 뱃지를 얻어요. 직원 창 얼굴 옆에 붙고, 누르면 크게 볼 수 있어요. 한 번 얻으면 레벨을 초기화해도 남아요.','<b>새 식구 나졸려</b>가 왔어요(총무). <b>배나온 · 최휘 · 고만해 · 황동만</b>도 프로필 그림이 생겼고, 매장의 작은 캐릭터도 그림에 맞게 다시 그렸어요.']]];
@@ -2235,7 +2184,7 @@ function admM(){return`<h2>🛠️ 관리자 모드</h2><p class="sub" style="ma
  <div class="mbtns"><button class="btn" data-a="admoff">관리자 끄기</button><button class="btn pri" data-a="close">닫기</button></div>`}
 function admGo(){const v=(($('admIn')||{}).value||'').trim();sha256(v).catch(()=>'').then(h=>{if(h===ADM_H){try{localStorage.setItem(ADM_K,h)}catch(e){}toast('🛠️ 관리자 모드 켜짐');modal(admM)}else toast('키가 맞지 않아요')})}
 const MENU=[{k:'dex',e:'📖',n:'직원 도감',d:'봉다방 식구 · 소개 · 카드 · 입사 컷신',w:1},{k:'guide',e:'📘',n:'안내',d:'알리미 · 튜토리얼 · 오프닝 · 패치노트'},{k:'set',e:'⚙️',n:'설정',d:'이펙트 · 알림 창 · 포스터 알림'},{k:'save',e:'💾',n:'세이브',d:'파일로 내보내기 · 불러오기 · 처음부터'},{k:'studio',e:'🎮',n:STUDIO,d:'개발 소개 · 홍보 · 후원 포스터'}];
-function menuM(){return`<h2>≡ 메뉴</h2><div class="mcat">${MENU.map(m=>`<button class="btn ${m.w?'w':''}" data-a="msub" data-k="${m.k}"><span class="me">${m.e}</span>${m.w?`<span><b>${m.n}</b><small>${m.d}</small></span>`:`<b>${m.n}</b><small>${m.d}</small>`}</button>`).join('')}</div><div class="mbtns" style="margin-top:10px"><button class="btn" data-a="prof" style="flex:1">👤 내 프로필 · 개인식별번호 · 상품 코드</button></div><p class="sub" style="margin:12px 0 0">봉다방 타이쿤 ${VLBL} · 창을 켜 둔 동안만 가게가 돌아가요.</p><div class="mbtns"><button class="btn pri" data-a="close">닫기</button></div>`}
+function menuM(){return`<h2>≡ 메뉴</h2><div class="mcat">${MENU.map(m=>`<button class="btn ${m.w?'w':''}" data-a="msub" data-k="${m.k}"><span class="me">${m.e}</span>${m.w?`<span><b>${m.n}</b><small>${m.d}</small></span>`:`<b>${m.n}</b><small>${m.d}</small>`}</button>`).join('')}</div><p class="sub" style="margin:12px 0 0">봉다방 타이쿤 ${VLBL} · 창을 켜 둔 동안만 가게가 돌아가요.</p><div class="mbtns"><button class="btn pri" data-a="close">닫기</button></div>`}
 function menuSub(k){return()=>{const m=MENU.find(x=>x.k===k)||MENU[0],B=(a,t,c)=>`<button class="btn ${c||''}" data-a="${a}">${t}</button>`;
  const it={guide:B('almhelp','🔔 알리미 안내 (봉다방의 핵심)')+B('tut','📘 튜토리얼 다시 보기')+B('gtrain','📚 직원 교육 · 성공 확률')+B('ggrade','🏅 등급별 버프')+B('gcrime','🔧 우체통 털이 · 검거 가능성')+'<button class="btn" data-a="odds" data-k="s" data-from="guide">🎟️ 스카우트 확률</button><button class="btn" data-a="odds" data-k="e" data-from="guide">🎁 장비 뽑기 확률</button>'+B('intro','🎬 오프닝 다시 보기')+B('notes',`📝 패치노트 · ${VLBL}`),
   set:B('fx',`✨ 이펙트 ${FXON?'켜짐':'꺼짐'}`,FXON?'on':'')+B('evwin',`🪟 이벤트 알림 창 ${S.evWin!==0?'켜짐':'꺼짐 (이펙트만)'}`,S.evWin!==0?'on':'')+B('trfx',`📚 교육 연출 ${trFxOn()?'켜짐':'꺼짐 (결과만)'}`,trFxOn()?'on':'')+B('adoff',`📢 포스터 알림 ${adOff()?'꺼짐 (수신 거부)':'켜짐'}`,adOff()?'':'on')+B('adm','🔑 관리자',isAdm()?'on':''),
@@ -2398,9 +2347,6 @@ function act(e){const z=e.target.closest('[data-go]');if(z){goTab(z.dataset.go);
  if(a==='staff'||a==='back'){modal(staffM(n));return}
  if(a==='badge'){modal(badgeM(n,b.dataset.from));return}
  if(a==='ach'){modal(achM(b.dataset.id));return}
- if(a==='prof'){profMsg=null;modal(profM());return}
- if(a==='pidcopy'){pidCopy();return}
- if(a==='codego'){codeGo();return}
  if(a==='assign'){modal(assignM(b.dataset.t));return}
  if(a==='eqpick'){modal(eqM(n,b.dataset.k));return}
  if(a==='card'){const bk=b.dataset.from==='dex'?'dex':'back';modal(()=>`<h2>🪪 ${n} 카드</h2><div class="cardw">${pic('card',n)}</div><div class="mbtns"><button class="btn pri" data-a="${bk}" data-n="${n}">돌아가기</button></div>`);return}
@@ -2536,7 +2482,7 @@ function act(e){const z=e.target.closest('[data-go]');if(z){goTab(z.dataset.go);
  if(a==='resetgo'){try{localStorage.removeItem(KEY)}catch(e){}S=fresh();guests=[];orders=[];W={};mFn=null;$('mBg').style.display='none';$('mBody').innerHTML='';render();toast('새 가게를 열었어요');intro(0);return}
  save();if(mFn){mRe();if(tab==='dlv')render()}else render()}
 $('list').addEventListener('click',act);$('segBar').addEventListener('click',act);$('mBody').addEventListener('click',act);$('sceneWrap').addEventListener('click',act);
-$('bossB').onclick=()=>{profMsg=null;modal(profM())};
+$('bossB').onclick=()=>modal(staffM(members('boss')[0]||'이일원'));
 $('menuB').onclick=()=>modal(menuM);
 $('evBar').onclick=()=>almSet(ALM.hg&&ALM.hg.end<=Date.now()?'hg':ALM.th&&ALM.th.end<=Date.now()?'th':!ALM.hg?'hg':!ALM.th?'th':'hg');
 /* ---------- 직원 끌어다 놓기 (전작과 같은 방식) ---------- */
@@ -2594,7 +2540,6 @@ setInterval(loop,66);
 /* 깜빡임(알리미 동그라미·커피포트·키오스크 불빛·피버 테두리) */
 let bkOn=0;setInterval(()=>{if(document.hidden)return;bkOn^=1;for(const id of['alm','list','mine'])$(id).classList.toggle('bk',!!bkOn)},700);setInterval(hud,300);setInterval(almTick,1000);setInterval(save,5000);
 addEventListener('visibilitychange',()=>{if(document.hidden)save()});addEventListener('pagehide',save);
-pid();
 if(!S.seen.intro)intro(0);
 /* 새 버전을 처음 열면 패치노트를 한 번 보여 준다(처음 하는 사람은 오프닝·튜토리얼만) */
 else if(verGt(VER,S.ver||'0')){const from=S.ver||'0',iv=setInterval(()=>{if(fullOn()||mOpen()||gxOn()||tutI>=0)return;clearInterval(iv);S.ver=VER;modal(notesM({from}));save()},800)}
