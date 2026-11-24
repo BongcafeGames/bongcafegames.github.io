@@ -1985,7 +1985,7 @@ function potM(i){return()=>{const id=S.pots[i],n=members('cook')[i];
  ${PRODS.map(p=>{const op=menuOpen(p);return`<button class="${id===p.id?'on':''} ${op?'':'lk'}" ${op?`data-a="potset" data-i="${i}" data-id="${p.id}"`:''}><img src="${ICON[p.id]}" alt=""><span><b>${p.n}</b><small>${op?`${p.p.toLocaleString('ko-KR')}원 · 재고 ${S.inv[p.id]}/${potCap(p.id)}${S.menuOn[p.id]?'':' · 판매 중지'}`:'🔒 카페 Lv.'+p.lv}</small></span></button>`}).join('')}</div>
  <div class="mbtns">${n?`<button class="btn" data-a="staff" data-n="${n}">${n} 정보</button>`:`<button class="btn" data-a="assign" data-t="cook">요리사 배치</button>`}<button class="btn pri" data-a="close">닫기</button></div>`}}
 /* 관리자 모드(운영자 전용): 키의 SHA-256만 들어 있다. 키는 어디에도 적어 두지 않는다 */
-const ADM_H='e9cc600e80d6afeae451004b34fc1fc5b53dbc7f5034a60f4ff51dcf38ebe6e5',ADM_K='bongcafe-adm';
+const ADM_H='78d85040efebf0c623c113bab3f4b93cce871bcb0d6514630c9f68e9f71ca683',ADM_K='bongcafe-adm';
 const isAdm=()=>{try{return localStorage.getItem(ADM_K)===ADM_H}catch(e){return false}};
 async function sha256(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const ADM_IN='width:100%;box-sizing:border-box;font-size:16px;padding:8px;background:#101312;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:6px';
