@@ -65,6 +65,26 @@ h2{font-size:13px;letter-spacing:3px;color:var(--dim);font-weight:700;margin:34p
 .applyb{display:block;text-align:center;margin-bottom:12px;padding:16px;font-size:18px;font-weight:800;background:var(--acc);color:#0c1411}.applyb span{font-size:11px;padding:1px 6px;border:1px solid #0c1411;vertical-align:3px}.applyb small{display:block;font-weight:400;font-size:13px}
 footer{color:var(--dim);font-size:12px;text-align:center;padding:28px 0 40px}
 @media (max-width:640px){.games,.gift{grid-template-columns:1fr}.hero h1{font-size:25px}.opts{grid-template-columns:1fr 1fr}.op .h{flex-direction:column;gap:0}}
+.smp3{display:grid;grid-template-columns:.42fr 1.6fr 1.3fr;gap:8px;align-items:end}.smp3 a{padding:5px}.smp3 span{font-size:12px!important}
+@media (max-width:640px){.smp3{grid-template-columns:1fr 2.2fr;grid-template-areas:"ph pc" "ph ce"}.smp3 a:nth-child(1){grid-area:ph}.smp3 a:nth-child(2){grid-area:pc}.smp3 a:nth-child(3){grid-area:ce}.smp3 span{white-space:nowrap}}
+.tcard{background:var(--pan);border:1px solid var(--tileB);padding:16px 10px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}.tcard>span{text-align:center;font-size:12.5px;color:var(--dim);font-weight:600}
+.acflip{--gc:#ff3df0;--glow:22px;width:min(300px,82vw);aspect-ratio:330/560;perspective:1400px;cursor:pointer}
+.accard{position:relative;width:100%;height:100%;transition:transform .8s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}.acflip.on .accard{transform:rotateY(180deg)}
+.acside{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;overflow:hidden;border:6px solid var(--gc);box-shadow:0 0 0 2px rgba(255,255,255,.55) inset,0 14px 30px rgba(0,0,0,.55),0 0 var(--glow) var(--gc);background:#f4ead9;transition:border-color .3s,box-shadow .3s}
+.acfront img.art{width:100%;height:100%;object-fit:cover;display:block}
+.acfront .grade{position:absolute;left:9px;top:9px;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--gc);box-shadow:0 2px 8px rgba(0,0,0,.45)}
+.acflip.gSp .acfront .grade{background:conic-gradient(#ff3df0,#ffd93d,#3fd99a,#5cb6ff,#ff3df0)}
+.acfront .grade b{width:43px;height:43px;border-radius:50%;background:#241710;display:grid;place-items:center;font-size:18px;font-weight:900;color:#ffe38a}
+.acfront .st5{position:absolute;left:9px;top:66px;background:rgba(36,23,16,.88);border-radius:12px;padding:2px 8px;color:#ffd45a;font-size:13px;letter-spacing:1px}
+.acfront .hint{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);background:rgba(36,23,16,.82);color:#fff1d6;font-size:11px;padding:4px 11px;border-radius:20px;white-space:nowrap}
+.acback{transform:rotateY(180deg);color:#3b2416;display:flex;flex-direction:column;background:repeating-linear-gradient(45deg,#f4ead9 0 14px,#efe2cd 14px 28px)}
+.acback .top{position:relative;height:41%;background:#fff;border-bottom:4px solid var(--gc);flex:none}.acback .top .f{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.acback .top .bd{position:absolute;left:50%;bottom:-44px;transform:translateX(-50%);width:88px;height:88px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
+.acback .bd2{flex:1;padding:50px 15px 12px;display:flex;flex-direction:column;gap:6px}.acback .nm{text-align:center;font-size:21px;font-weight:900}.acback .aff{text-align:center;font-size:11px;color:#7a5a43;margin-top:-3px}
+.acchips{display:flex;justify-content:center;gap:5px;margin:3px 0 1px}.acchips span{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:11px;background:#3b2416;color:#ffe2a0}.acchips .r{background:var(--gc);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.acst{display:grid;grid-template-columns:48px 1fr 26px;align-items:center;gap:5px;font-size:11px}.acst i{height:7px;border-radius:5px;background:#dcc9ae;overflow:hidden;position:relative}.acst i:after{content:"";position:absolute;inset:0;width:var(--v);background:linear-gradient(90deg,#b8742c,#e9a947);border-radius:5px}.acst em{font-style:normal;text-align:right;font-weight:700}
+.acq{margin-top:auto;font-size:11px;text-align:center;background:#fff8ec;border:1px dashed #b48a62;border-radius:9px;padding:6px}
+.gpick{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.gpick button{font:inherit;font-size:13px;font-weight:800;width:46px;padding:6px 0;border-radius:8px;border:2px solid var(--c);background:#141a18;color:var(--c);cursor:pointer}.gpick button.on{background:var(--c);color:#111}
 </style>
 </head>
 <body>
@@ -82,20 +102,28 @@ footer{color:var(--dim);font-size:12px;text-align:center;padding:28px 0 40px}
 <div class="opts">
  <div class="op base cut"><div class="im"><img src="img/aamen_profile.webp" alt=""></div><div class="h"><b>캐릭터 추가</b><i>50만원</i></div><p>기본 항목이에요. 내 캐릭터 프로필 그림이 직원으로 들어가요.</p></div>
  <div class="op cut"><div class="im" style="font-size:40px;font-weight:800;color:var(--gold)">아아멘</div><div class="h"><b>이름 지정</b><i>+20만원</i></div><p>직원 이름이 내 이름으로 고정돼요.</p></div>
- <div class="op cut"><div class="im duo"><img src="../sponsors/shin/s/신재민_프로필.webp" alt=""><img src="../sponsors/shin/s/신재민_프로필2모습.webp" alt=""></div><div class="h"><b>프로필 2모습</b><i>+40만원</i></div><p>프로필을 누르면 두 번째 모습으로 바뀌어요.</p></div>
+ <div class="op cut"><div class="im duo"><img src="../sponsors/lgm/s/이개모_프로필.webp" alt=""><img src="../sponsors/lgm/s/이개모_프로필2모습.webp" alt=""></div><div class="h"><b>프로필 2모습</b><i>+40만원</i></div><p>프로필을 누르면 두 번째 모습으로 바뀌어요.</p></div>
  <div class="op cut"><div class="im px"><img src="img/aamen_mine.gif" alt=""></div><div class="h"><b>광산 모션</b><i>+30만원</i></div><p>광산에서 내 모습으로 곡괭이질해요.</p></div>
- <div class="op cut"><div class="im px"><img src="../sponsors/shin/신재민_판매모션.gif" alt=""></div><div class="h"><b>판매 모션</b><i>+30만원</i></div><p>판매 칸에서 내 모습으로 일해요.</p></div>
- <div class="op cut"><div class="im px"><img src="../sponsors/shin/신재민_가공모션.gif" alt=""></div><div class="h"><b>가공 모션</b><i>+30만원</i></div><p>가공 칸에서 내 모습으로 망치질해요.</p></div>
+ <div class="op cut"><div class="im px"><img src="img/aamen_sell.gif" alt=""></div><div class="h"><b>판매 모션</b><i>+30만원</i></div><p>판매 칸에서 내 모습으로 일해요.</p></div>
+ <div class="op cut"><div class="im px"><img src="img/aamen_forge.gif" alt=""></div><div class="h"><b>가공 모션</b><i>+30만원</i></div><p>가공 칸에서 내 모습으로 망치질해요.</p></div>
  <div class="op cut"><div class="im card"><img src="img/aamen_card.webp" alt=""></div><div class="h"><b>캐릭터 카드</b><i>+30만원</i></div><p>직원 창에서 볼 수 있는 수집 카드가 생겨요.</p><p class="cond">조건: 캐릭터 등록 + 이름 지정</p></div>
  <div class="op cut"><div class="im"><img src="img/aamen_badge.webp" alt=""></div><div class="h"><b>캐릭터 뱃지</b><i>+40만원</i></div><p>카드 뒷면에 들어가는 나만의 원형 뱃지예요.</p><p class="cond">조건: 캐릭터 등록 + 이름 지정 + 카드</p></div>
 </div>
-<div class="full cut"><b>💎 풀패키지</b><s>따로 사면 270만원</s><span class="pr">250만원</span><span class="sv">20만원 할인</span><p>위 8가지를 모두 한 번에. 예시 그림은 아아멘 캐릭터예요. 프로필 2모습·판매·가공 모션은 후원자 신재민 님 예시예요.</p></div>
+<div class="full cut"><b>💎 풀패키지</b><s>따로 사면 270만원</s><span class="pr">250만원</span><span class="sv">20만원 할인</span><p>위 8가지를 모두 한 번에. 예시 그림은 아아멘 캐릭터예요. 프로필 2모습은 이개모 님 예시예요.</p></div>
 
 <h2>풀패키지 샘플</h2>
 <div class="smp">
  <a class="cut" href="img/sample_card.webp" target="_blank" rel="noopener"><img src="img/sample_card.webp" alt="풀패키지 카드 앞뒷면 설명" loading="lazy"><span>캐릭터 카드 앞면·뒷면에 들어가는 것</span></a>
- <div class="smp2"><a class="cut" href="img/sample_phone.webp" target="_blank" rel="noopener"><img src="img/sample_phone.webp" alt="" loading="lazy"><span>폰 배경화면</span></a><a class="cut" href="img/sample_pc.webp" target="_blank" rel="noopener"><img src="img/sample_pc.webp" alt="" loading="lazy"><span>PC 배경화면</span></a></div>
- <a class="cut" href="img/sample_cert.webp" target="_blank" rel="noopener"><img src="img/sample_cert.webp" alt="" loading="lazy"><span>후원 감사장</span></a>
+ <div class="tcard cut">
+  <div class="acflip gSp" id="acCd" onclick="this.classList.toggle('on')"><div class="accard">
+   <div class="acside acfront"><img class="art" src="img/card_front.webp" alt="아아멘 카드 앞면"><div class="grade"><b id="gtx">S+</b></div><div class="st5">★★★★★</div><div class="hint">눌러서 뒤집기 ↻</div></div>
+   <div class="acside acback"><div class="top"><img class="f" src="img/card_face.webp" alt=""><img class="bd" src="img/card_badge.webp" alt=""></div><div class="bd2"><div class="nm">아아멘</div><div class="aff">광산 알바 · 후원자 · Lv.90</div><div class="acchips"><span class="r" id="gch">S+</span><span>★5</span><span>후원</span></div>
+    <div class="acst"><span>채광</span><i style="--v:84%"></i><em>84</em></div><div class="acst"><span>운전</span><i style="--v:72%"></i><em>72</em></div><div class="acst"><span>손기술</span><i style="--v:78%"></i><em>78</em></div><div class="acst"><span>체력</span><i style="--v:80%"></i><em>80</em></div><div class="acq">"아아~ 멘!"</div></div></div>
+  </div></div>
+  <div class="gpick" id="gpk"></div>
+  <span>등급 버튼을 누르면 그 등급의 카드 테두리로 바뀌어요 · 카드를 누르면 뒤집혀요 · 능력치는 예시</span>
+ </div>
+ <div class="smp3"><a class="cut" href="img/sample_phone.webp" target="_blank" rel="noopener"><img src="img/sample_phone.webp" alt="" loading="lazy"><span>폰 배경화면</span></a><a class="cut" href="img/sample_pc.webp" target="_blank" rel="noopener"><img src="img/sample_pc.webp" alt="" loading="lazy"><span>PC 배경화면</span></a><a class="cut" href="img/sample_cert.webp" target="_blank" rel="noopener"><img src="img/sample_cert.webp" alt="" loading="lazy"><span>후원 감사장</span></a></div>
 </div>
 <p style="color:var(--dim);font-size:13px;margin:8px 0 0">샘플은 아아멘 캐릭터예요. 배경색은 카드 그림 색에 맞춰 사람마다 달라요.</p>
 
@@ -130,5 +158,13 @@ footer{color:var(--dim);font-size:12px;text-align:center;padding:28px 0 40px}
 </div>
 </div>
 <footer>© 봉다방게임즈</footer>
+<script>
+(function(){var GR=['D','C','B','A','S','S+'],GC=['#9aa3a0','#5cb6ff','#4fd17a','#f2c14e','#ff5d73','#ff3df0'],GL=[0,0,0,8,14,22];
+var cd=document.getElementById('acCd'),pk=document.getElementById('gpk');if(!cd)return;
+function set(i){cd.style.setProperty('--gc',GC[i]);cd.style.setProperty('--glow',GL[i]+'px');cd.classList.toggle('gSp',i==5);
+document.getElementById('gtx').textContent=GR[i];document.getElementById('gch').textContent=GR[i];
+[].forEach.call(pk.children,function(b,j){b.classList.toggle('on',j==i)});}
+GR.forEach(function(g,i){var b=document.createElement('button');b.type='button';b.textContent=g;b.style.setProperty('--c',GC[i]);b.onclick=function(){set(i)};pk.appendChild(b)});set(5);})();
+</script>
 </body>
 </html>
