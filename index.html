@@ -38,7 +38,7 @@ h2{font-size:13px;letter-spacing:3px;color:var(--dim);font-weight:700;margin:36p
 .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
 .info div{background:var(--pan);border:1px solid var(--tileB);padding:14px 16px;font-size:14px;color:#c9d0cd}
 .info b{display:block;color:var(--text);margin-bottom:2px}
-.posters{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+.posters{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
 .pst{display:block;background:var(--pan);border:1px solid var(--tileB);padding:8px;transition:filter .15s}
 .pst:hover{filter:brightness(1.12)}
 .pst img{display:block;width:100%;height:auto}
@@ -59,7 +59,7 @@ h2{font-size:13px;letter-spacing:3px;color:var(--dim);font-weight:700;margin:36p
 .nocopy{margin:36px 0 0;padding:14px 16px;border:1px solid rgba(255,123,107,.45);background:rgba(255,123,107,.08);font-size:13px;color:#e8c3bd}
 .nocopy b{display:block;color:var(--red);margin-bottom:4px}
 .visits{font-size:13px;margin-bottom:8px}.visits b{color:var(--acc)}
-.spi{font-size:40px;line-height:1;width:56px;text-align:center;flex:none}.spb{display:flex;align-items:center;gap:16px;background:linear-gradient(90deg,rgba(242,193,78,.14),var(--pan));border:1px solid rgba(242,193,78,.5);padding:16px 20px;transition:filter .15s}.spb:hover{filter:brightness(1.15)}.spb img{width:56px;height:auto;flex:none}.spb b{display:block;font-size:18px;color:var(--gold)}.spb span{color:#c9d0cd;font-size:14px}.spb i{margin-left:auto;font-style:normal;font-size:22px;color:var(--gold)}
+.spb+.spb{margin-top:10px}.spi{font-size:40px;line-height:1;width:56px;text-align:center;flex:none}.spb{display:flex;align-items:center;gap:16px;background:linear-gradient(90deg,rgba(242,193,78,.14),var(--pan));border:1px solid rgba(242,193,78,.5);padding:16px 20px;transition:filter .15s}.spb:hover{filter:brightness(1.15)}.spb img{width:56px;height:auto;flex:none}.spb b{display:block;font-size:18px;color:var(--gold)}.spb span{color:#c9d0cd;font-size:14px}.spb i{margin-left:auto;font-style:normal;font-size:22px;color:var(--gold)}
 footer{color:var(--dim);font-size:12px;text-align:center;padding:28px 0 40px}
 @media (max-width:640px){.posters{grid-template-columns:1fr 1fr}.n time{display:none}header{padding:36px 0 18px}.logo h1{font-size:27px}}
 </style>
@@ -90,16 +90,8 @@ footer{color:var(--dim);font-size:12px;text-align:center;padding:28px 0 40px}
   </section>
 </div>
 
-<h2>포스터</h2>
-<div class="posters">
-  <a class="pst cut" href="poster/all.webp" target="_blank" rel="noopener"><img src="poster/all_s.webp" alt="봉다방게임즈 통합 포스터" loading="lazy"><span>봉다방게임즈</span></a>
-  <a class="pst cut" href="poster/cafe.webp" target="_blank" rel="noopener"><img src="poster/cafe_s.webp" alt="봉다방 타이쿤 홍보 포스터" loading="lazy"><span>봉다방 타이쿤 홍보</span></a>
-  <a class="pst cut" href="poster/gordo.webp" target="_blank" rel="noopener"><img src="poster/gordo_s.webp" alt="고르도 광산 타이쿤 홍보 포스터" loading="lazy"><span>고르도 광산 타이쿤 홍보</span></a>
-  <a class="pst cut" href="poster/sponsor.webp" target="_blank" rel="noopener"><img src="poster/sponsor_s.webp" alt="봉다방게임즈 후원 안내 포스터" loading="lazy"><span>💝 후원 안내</span></a>
-</div>
-<p class="phint">포스터를 누르면 크게 볼 수 있어요.</p>
-
 <h2>후원자</h2>
+<a class="spb cut" href="support/"><img src="img/app_mine.png" alt="" style="image-rendering:pixelated"><div><b>💌 후원 안내</b><span>후원하는 방법과 혜택을 알려 드려요. 내 캐릭터가 게임에 들어가요!</span></div><i>→</i></a>
 <a class="spb cut" href="sponsors/"><span class="spi">💝</span><div><b>후원자 자료실 <span class="tag new">BETA</span></b><span>후원해 주신 분들의 캐릭터 그림과 기념 배경화면·감사장을 받아 가세요.</span></div><i>→</i></a>
 
 <h2>공지사항</h2>

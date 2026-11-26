@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>후원 안내 · 봉다방게임즈</title>
+<link rel="icon" href="../img/favicon.png">
+<style>
+:root{--acc:#3fd99a;--bg:#141716;--pan:#1b1f1e;--tile:#232726;--tileB:#383d3b;--text:#e9edeb;--dim:#8d9692;--gold:#f2c14e;--pink:#ff6fa8;--red:#ff7b6b;--c:14px;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.6 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.cut{clip-path:polygon(0 0,calc(100% - var(--c)) 0,100% var(--c),100% 100%,var(--c) 100%,0 calc(100% - var(--c)))}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+.back{display:inline-block;margin:20px 0 0;color:var(--dim);font-size:14px}.back:hover{color:var(--text)}
+.hero{margin:18px 0 8px;padding:30px 24px;text-align:center;background:linear-gradient(135deg,rgba(255,111,168,.18),rgba(242,193,78,.12));border:1px solid rgba(255,111,168,.45)}
+.hero small{display:block;letter-spacing:4px;font-size:12px;font-weight:700;color:var(--pink)}
+.hero h1{margin:6px 0 8px;font-size:32px;line-height:1.25}.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p{margin:0;color:#cfd6d3}
+h2{font-size:13px;letter-spacing:3px;color:var(--dim);font-weight:700;margin:34px 0 12px}
+.box{background:var(--pan);border:1px solid var(--tileB);padding:18px 20px;color:#cfd6d3}
+.box b{color:var(--text)}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gm{background:var(--pan);border:1px solid var(--tileB);padding:18px 20px;display:flex;gap:14px;align-items:center}
+.gm img{width:64px;height:64px;image-rendering:pixelated;flex:none}
+.gm b{display:block;font-size:18px}.gm span{color:var(--dim);font-size:13px}
+.gm .pr{font-size:26px;font-weight:800;color:var(--gold);line-height:1.2}
+.games.one{grid-template-columns:1fr}
+.gm.cafe{border-color:rgba(255,111,168,.5)}.gm.cafe .pr{color:var(--pink)}
+.gm.mine{border-color:rgba(242,193,78,.5)}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.op{background:var(--pan);border:1px solid var(--tileB);padding:12px;display:flex;flex-direction:column;gap:8px}
+.op .im{aspect-ratio:1;background:var(--tile);display:grid;place-items:center;overflow:hidden}
+.op .im img{width:100%;height:100%;object-fit:cover}
+.op .im.px{background:repeating-conic-gradient(#2b302e 0 25%,#232726 0 50%) 0 0/16px 16px}.op .im.px img{object-fit:contain;image-rendering:pixelated;width:70%}
+.op .im.card img{object-fit:cover;object-position:top}
+.op .im.duo{display:flex}.op .im.duo img{width:50%}
+.op .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.op .h b{font-size:16px}.op .h i{font-style:normal;font-weight:800;color:var(--gold);white-space:nowrap}
+.op p{margin:0;font-size:13px;color:#b9c1be}
+.op.base{border-color:rgba(242,193,78,.6)}
+.full{margin-top:14px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:linear-gradient(90deg,rgba(242,193,78,.18),var(--pan));border:1px solid rgba(242,193,78,.6);padding:18px 22px}
+.full b{font-size:20px}.full s{color:var(--dim)}.full .pr{font-size:30px;font-weight:800;color:var(--gold)}
+.full .sv{font-size:12px;font-weight:700;padding:2px 9px;background:var(--red);color:#1a0c0a}
+.full p{margin:0;color:#cfd6d3;font-size:14px;flex-basis:100%}
+.gift{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}
+.gift .ims{display:flex;gap:10px;align-items:flex-end}
+.gift .ims img{display:block;border:1px solid var(--tileB)}
+.gift ul{margin:8px 0 0;padding-left:18px}.gift li{margin:4px 0}
+.btn{display:inline-block;margin-top:12px;padding:10px 16px;font-weight:700;background:var(--tile);border:1px solid var(--tileB)}.btn:hover{filter:brightness(1.2)}
+.steps{counter-reset:s;display:grid;gap:10px}
+.st{background:var(--pan);border:1px solid var(--tileB);padding:16px 18px 16px 64px;position:relative;color:#cfd6d3}
+.st:before{counter-increment:s;content:counter(s);position:absolute;left:18px;top:14px;width:32px;height:32px;display:grid;place-items:center;font-weight:800;background:var(--acc);color:#0c1411}
+.st b{display:block;color:var(--text);font-size:16px;margin-bottom:2px}
+.st .hl{color:var(--gold);font-weight:800}
+.contact{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px}.contact{grid-template-columns:repeat(4,1fr)}@media (max-width:640px){.contact{grid-template-columns:1fr 1fr}}.x{}
+.contact div{background:var(--tile);border:1px solid var(--tileB);padding:12px 14px;font-size:14px}
+.contact em{display:inline-block;font-style:normal;font-size:12px;font-weight:700;padding:1px 8px;margin-bottom:4px}
+.contact b{display:block;font-size:20px;color:var(--gold)}
+.faq details{background:var(--pan);border:1px solid var(--tileB);border-top:0}.faq details:first-child{border-top:1px solid var(--tileB)}
+.faq summary{cursor:pointer;padding:14px 16px;font-weight:600;list-style:none}.faq summary::-webkit-details-marker{display:none}.faq summary:before{content:"Q. ";color:var(--acc)}
+.faq details p{margin:0;padding:0 16px 14px;color:#c9d0cd;font-size:14px}
+.applyb{display:block;text-align:center;margin-bottom:12px;padding:16px;font-size:18px;font-weight:800;background:var(--acc);color:#0c1411}.applyb span{font-size:11px;padding:1px 6px;border:1px solid #0c1411;vertical-align:3px}.applyb small{display:block;font-weight:400;font-size:13px}
+footer{color:var(--dim);font-size:12px;text-align:center;padding:28px 0 40px}
+@media (max-width:640px){.games,.gift{grid-template-columns:1fr}.hero h1{font-size:25px}.opts{grid-template-columns:1fr 1fr}.op .h{flex-direction:column;gap:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="../">← 봉다방게임즈 홈</a>
+
+<div class="hero cut"><small>SUPPORT US</small><h1>후원해 주시면<br><em>본인 캐릭터</em>가 게임에 들어가요</h1><p>게임은 무료, 업데이트는 계속! 후원해 주신 분의 캐릭터는 모든 플레이어의 게임에 직원으로 등장해요.</p></div>
+
+<h2>어떤 게임에 들어가나요</h2>
+<div class="games one">
+ <div class="gm mine cut"><img src="../img/app_mine.png" alt=""><div><b>고르도 광산 타이쿤</b><span>광산 알바로 입사 · 모든 플레이어의 광산에 내 캐릭터가 등장해요</span><div class="pr">50만원부터</div></div></div>
+</div>
+
+<h2>고르도 광산 타이쿤 후원 항목</h2>
+<div class="opts">
+ <div class="op base cut"><div class="im"><img src="img/aamen_profile.webp" alt=""></div><div class="h"><b>캐릭터 추가</b><i>50만원</i></div><p>기본 항목이에요. 내 캐릭터 프로필 그림이 직원으로 들어가요.</p></div>
+ <div class="op cut"><div class="im" style="font-size:40px;font-weight:800;color:var(--gold)">아아멘</div><div class="h"><b>이름 지정</b><i>+20만원</i></div><p>직원 이름이 내 이름으로 고정돼요.</p></div>
+ <div class="op cut"><div class="im duo"><img src="../sponsors/shin/s/신재민_프로필.webp" alt=""><img src="../sponsors/shin/s/신재민_프로필2모습.webp" alt=""></div><div class="h"><b>프로필 2모습</b><i>+40만원</i></div><p>프로필을 누르면 두 번째 모습으로 바뀌어요.</p></div>
+ <div class="op cut"><div class="im px"><img src="img/aamen_mine.gif" alt=""></div><div class="h"><b>광산 모션</b><i>+30만원</i></div><p>광산에서 내 모습으로 곡괭이질해요.</p></div>
+ <div class="op cut"><div class="im px"><img src="../sponsors/shin/신재민_판매모션.gif" alt=""></div><div class="h"><b>판매 모션</b><i>+30만원</i></div><p>판매 칸에서 내 모습으로 일해요.</p></div>
+ <div class="op cut"><div class="im px"><img src="../sponsors/shin/신재민_가공모션.gif" alt=""></div><div class="h"><b>가공 모션</b><i>+30만원</i></div><p>가공 칸에서 내 모습으로 망치질해요.</p></div>
+ <div class="op cut"><div class="im card"><img src="img/aamen_card.webp" alt=""></div><div class="h"><b>캐릭터 카드</b><i>+30만원</i></div><p>직원 창에서 볼 수 있는 수집 카드가 생겨요.</p></div>
+ <div class="op cut"><div class="im"><img src="img/aamen_badge.webp" alt=""></div><div class="h"><b>캐릭터 뱃지</b><i>+40만원</i></div><p>카드 뒷면에 들어가는 나만의 원형 뱃지예요.</p></div>
+</div>
+<div class="full cut"><b>💎 풀패키지</b><s>따로 사면 270만원</s><span class="pr">250만원</span><span class="sv">20만원 할인</span><p>위 8가지를 모두 한 번에. 예시 그림은 아아멘 캐릭터예요. 프로필 2모습·판매·가공 모션은 후원자 신재민 님 예시예요.</p></div>
+
+<h2>후원 기념 선물</h2>
+<div class="box cut gift">
+ <div><b style="font-size:17px">💝 후원자 자료실에서 받아 가세요</b>
+ <ul><li>후원해 주신 항목의 <b>원본 그림</b></li><li>모든 후원자: <b>후원 감사장</b></li><li>풀패키지: 감사장 + <b>폰·PC 배경화면</b></li></ul>
+ <a class="btn cut" href="../sponsors/">후원자 자료실 보기 →</a></div>
+ <div class="ims"><img src="img/aamen_phone.webp" alt="" style="width:30%"><img src="img/aamen_cert.webp" alt="" style="width:66%"></div>
+</div>
+
+<h2>후원 방법</h2>
+<a class="applyb cut" href="apply.html">📝 후원 신청서 쓰기 <span>BETA</span><small>항목을 고르면 금액과 보낼 사진을 알려 줘요</small></a>
+<div class="steps">
+ <div class="st"><b>먼저 연락해 주세요</b>문자나 DM으로 원하는 항목을 알려 주세요. 셀카나 게임 속 내 캐릭터 사진을 같이 보내 주시면 더 빨라요.</div>
+ <div class="st"><b>입금해 주세요</b>입금자명을 <span class="hl">아아멘</span>으로 적어 입금해 주세요.</div>
+ <div class="st"><b>디자이너와 그림을 정해요</b>디자이너가 사진을 보고 내 캐릭터 그림을 그려요. 캐릭터·2모습·카드는 이개모 님, 뱃지는 광순덕 님이 맡아요.</div>
+ <div class="st"><b>게임에 들어가요</b>그림이 완성되면 다음 업데이트 때 게임에 추가되고, 후원자 자료실에도 올라가요.</div>
+</div>
+<div class="contact">
+ <div><em style="background:var(--acc);color:#0c1411">문의</em><b>712-7514</b>또는 DM</div>
+ <div><em style="background:#b48cff;color:#140c22">캐릭터 디자이너</em><b>238-8626</b>이개모</div>
+ <div><em style="background:#ff8fd6;color:#2a0c1c">뱃지 디자이너</em><b>248-1085</b>광순덕</div>
+ <div><em style="background:var(--gold);color:#1a1405">입금자명</em><b>아아멘</b>으로 입금</div>
+</div>
+
+<h2>자주 묻는 질문</h2>
+<div class="faq">
+ <details><summary>후원하면 나한테 게임 안 혜택이 있나요?</summary><p>아니요. 후원 혜택은 내 캐릭터가 모든 플레이어의 게임에 직원으로 들어가는 거예요. 게임 속 돈이나 아이템은 드리지 않아요.</p></details>
+ <details><summary>항목을 골라서 할 수 있나요?</summary><p>네. 기본 캐릭터 추가(50만원)에 원하는 항목만 더하면 돼요. 전부 원하시면 풀패키지가 20만원 더 싸요.</p></details>
+ <details><summary>게임에 들어가기까지 얼마나 걸리나요?</summary><p>그림이 완성된 뒤 다음 업데이트 때 들어가요. 그림 작업 기간은 디자이너와 상의해 주세요.</p></details>
+</div>
+</div>
+<footer>© 봉다방게임즈</footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>후원 신청서 · 봉다방게임즈</title>
+<link rel="icon" href="../img/favicon.png">
+<style>
+:root{--acc:#3fd99a;--bg:#141716;--pan:#1b1f1e;--tile:#232726;--tileB:#383d3b;--text:#e9edeb;--dim:#8d9692;--gold:#f2c14e;--pink:#ff6fa8;--red:#ff7b6b;--c:14px;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.6 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.cut{clip-path:polygon(0 0,calc(100% - var(--c)) 0,100% var(--c),100% 100%,var(--c) 100%,0 calc(100% - var(--c)))}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 40px}
+.back{display:inline-block;margin:20px 0 0;color:var(--dim);font-size:14px}
+h1{font-size:28px;margin:14px 0 4px}h1 .b{font-size:13px;font-weight:700;padding:2px 8px;vertical-align:6px;color:var(--pink);border:1px solid rgba(255,111,168,.55);background:rgba(255,111,168,.12)}
+.lead{color:var(--dim);margin:0 0 18px}
+.sec{background:var(--pan);border:1px solid var(--tileB);padding:18px 20px;margin:12px 0}
+.sec>b{display:block;font-size:16px;margin-bottom:10px}.sec>b i{font-style:normal;color:var(--acc);margin-right:6px}
+label.f{display:block;font-size:13px;color:var(--dim);margin:10px 0 4px}
+input[type=text],textarea{width:100%;font:inherit;font-size:16px;padding:11px 13px;background:var(--tile);border:1px solid var(--tileB);color:var(--text);outline:none}
+input[type=text]:focus,textarea:focus{border-color:var(--gold)}
+textarea{min-height:70px;resize:vertical}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg label,.it{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--tile);border:1px solid var(--tileB);cursor:pointer}
+.seg label:has(input:checked),.it:has(input:checked){border-color:var(--gold);background:rgba(242,193,78,.1)}
+.seg input,.it input{margin-top:4px;accent-color:#f2c14e;width:18px;height:18px;flex:none}
+.seg small,.it small{display:block;color:var(--dim);font-size:12px}
+.items{display:grid;gap:8px}
+.it .t{flex:1}.it .p{font-weight:800;color:var(--gold);white-space:nowrap}
+.it.dis{opacity:.45;pointer-events:none}
+.sum{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:12px;padding:14px 16px;background:linear-gradient(90deg,rgba(242,193,78,.16),transparent);border:1px solid rgba(242,193,78,.5)}
+.sum .v{font-size:26px;font-weight:800;color:var(--gold)}.sum s{color:var(--dim)}.sum .dc{font-size:12px;font-weight:700;padding:2px 8px;background:var(--red);color:#1a0c0a}
+.pkg{margin-top:8px;font-size:13px;color:var(--dim)}
+.ph{display:grid;gap:8px}
+.ph>div{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--tile);border:1px solid var(--tileB)}
+.ph em{font-style:normal;font-size:26px;flex:none}.ph b{display:block}.ph span{font-size:13px;color:var(--dim)}
+.rp{font-size:11px;font-weight:700;padding:1px 6px;margin-left:4px;color:var(--acc);border:1px solid rgba(63,217,154,.5)}
+.empty{color:var(--dim);font-size:14px}
+.prof[hidden]{display:none}
+.go{display:block;width:100%;margin-top:16px;padding:15px;font:inherit;font-size:17px;font-weight:800;background:var(--acc);color:#0c1411;border:0;cursor:pointer}
+.go:disabled{opacity:.4;cursor:not-allowed}
+.out{margin-top:12px;white-space:pre-wrap;font-size:14px;background:#0f1211;border:1px dashed var(--tileB);padding:14px;color:#cfd6d3}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--acc);color:#0c1411;font-weight:700;padding:10px 18px;opacity:0;transition:opacity .2s;pointer-events:none}.toast.on{opacity:1}
+.how{font-size:14px;color:#cfd6d3}.how .g{color:var(--gold);font-weight:700}
+.err{color:var(--red);font-size:13px;margin-top:8px}
+@media (max-width:560px){.seg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="./">← 후원 안내</a>
+<h1>후원 신청서 <span class="b">BETA</span></h1>
+<p class="lead">고르도 광산 타이쿤 · 내 캐릭터를 게임에 넣어 보세요.</p>
+
+<div class="sec cut"><b><i>1</i>이름</b>
+<input type="text" id="nm" placeholder="게임 속(RP) 이름" maxlength="20">
+</div>
+
+<div class="sec cut"><b><i>2</i>등록 여부</b>
+<div class="seg">
+ <label><input type="radio" name="reg" value="new" checked><div>처음 등록해요<small>캐릭터 추가 50만원 포함</small></div></label>
+ <label><input type="radio" name="reg" value="old"><div>이미 등록돼 있어요<small>추가 항목만 신청</small></div></label>
+</div>
+</div>
+
+<div class="sec cut"><b><i>3</i>후원 항목</b>
+<div class="items" id="items"></div>
+<div class="sum" id="sum"></div>
+<div class="pkg">처음 등록하면서 8가지를 모두 고르면 풀패키지 <b>250만원</b>(20만원 할인)이 돼요.</div>
+</div>
+
+<div class="sec cut prof" id="prof"><b><i>4</i>카드·뱃지에 들어갈 정보</b>
+<label class="f">소속</label><input type="text" id="aff" placeholder="예: 교통정비공사" maxlength="30">
+<label class="f">직급</label><input type="text" id="rank" placeholder="예: 부원장" maxlength="30">
+<label class="f">성격</label><textarea id="per" placeholder="예: 느긋하지만 일할 땐 진지함" maxlength="200"></textarea>
+<label class="f">특징</label><textarea id="feat" placeholder="예: 늘 선글라스, 노란 목도리, 말끝마다 '~했음'" maxlength="200"></textarea>
+</div>
+
+<div class="sec cut"><b><i>5</i>보낼 사진 (RP 실물 사진)</b>
+<div class="ph" id="ph"></div>
+</div>
+
+<button class="go cut" id="go" disabled>신청 내용 복사하기</button>
+<div class="err" id="err"></div>
+<div class="out" id="out" hidden></div>
+<div class="sec cut how" id="how"><b>📨 이렇게 보내 주세요</b>
+1. 위 버튼으로 신청 내용을 복사해요.<br>
+2. <span class="g">712-7514</span>로 문자하거나 DM으로 복사한 내용을 붙여 넣고, 사진을 같이 보내 주세요.<br>
+3. 확인 연락을 받으면 입금자명 <span class="g">아아멘</span>으로 입금해 주세요.</div>
+</div>
+<div class="toast" id="toast">복사했어요! 문자나 DM에 붙여 넣어 주세요</div>
+<script>
+const IT=[
+ {k:'name',n:'이름 지정',p:20,d:'직원 이름이 내 이름으로 고정돼요',ph:null},
+ {k:'form',n:'프로필 2모습',p:40,d:'프로필을 누르면 두 번째 모습으로 바뀌어요',ph:['🤳','2모습 셀카 2장','서로 다른 모습(옷·표정)으로 2장']},
+ {k:'mine',n:'광산 모션',p:30,d:'광산에서 내 모습으로 곡괭이질',ph:'body'},
+ {k:'sell',n:'판매 모션',p:30,d:'판매 칸에서 내 모습으로 일해요',ph:'body'},
+ {k:'forge',n:'가공 모션',p:30,d:'가공 칸에서 내 모습으로 망치질',ph:'body'},
+ {k:'card',n:'캐릭터 카드',p:30,d:'직원 창에서 보는 수집 카드',ph:['🧍','카드용 전신 사진','머리부터 발끝까지 나오게 1장'],prof:1},
+ {k:'badge',n:'캐릭터 뱃지',p:40,d:'카드 뒷면의 나만의 원형 뱃지',ph:['🤳','뱃지용 셀카','얼굴이 잘 보이게 1장'],prof:1}];
+const $=id=>document.getElementById(id);
+$('items').innerHTML=`<label class="it" id="baseIt"><input type="checkbox" checked disabled><div class="t"><b>캐릭터 추가</b><small>기본 항목 · 내 프로필 그림이 직원으로 들어가요</small></div><span class="p">50만원</span></label>`+IT.map(i=>`<label class="it"><input type="checkbox" value="${i.k}"><div class="t"><b>${i.n}</b><small>${i.d}</small></div><span class="p">+${i.p}만원</span></label>`).join('');
+const regNew=()=>document.querySelector('input[name=reg]:checked').value==='new';
+function sel(){return IT.filter(i=>document.querySelector(`#items input[value=${i.k}]`).checked)}
+function total(){const s=sel();let t=s.reduce((a,i)=>a+i.p,0),full=0;if(regNew()){t+=50;if(s.length===IT.length){full=1}}return{s,t,full}}
+function draw(){
+ $('baseIt').style.display=regNew()?'':'none';
+ const {s,t,full}=total();
+ $('sum').innerHTML=full?`<span>합계</span><s>${t}만원</s><span class="v">250만원</span><span class="dc">풀패키지 20만원 할인</span>`:`<span>합계</span><span class="v">${t}만원</span>`;
+ $('prof').hidden=!s.some(i=>i.prof);
+ const ph=[];if(regNew())ph.push(['🤳','캐릭터 등록용 셀카','얼굴이 잘 보이게 1장']);
+ s.forEach(i=>{if(i.ph==='body'){if(!ph.some(p=>p[1]==='모션용 전신 사진'))ph.push(['🧍','모션용 전신 사진','옷차림이 다 보이게 1장 (모션 여러 개여도 1장)'])}else if(i.ph)ph.push(i.ph)});
+ $('ph').innerHTML=ph.length?ph.map(p=>`<div><em>${p[0]}</em><div><b>${p[1]}<span class="rp">RP</span></b><span>${p[2]}</span></div></div>`).join(''):'<p class="empty">항목을 고르면 필요한 사진이 여기에 나와요.</p>';
+ $('go').disabled=!(regNew()||s.length);
+}
+document.addEventListener('change',draw);draw();
+$('go').onclick=()=>{
+ const nm=$('nm').value.trim();if(!nm){$('err').textContent='이름을 적어 주세요.';$('nm').focus();return}$('err').textContent='';
+ const {s,t,full}=total();
+ let L=['[고르도 광산 타이쿤 후원 신청]','이름: '+nm,'등록 여부: '+(regNew()?'처음 등록':'이미 등록됨(추가 항목)'),'신청 항목: '+[...(regNew()?['캐릭터 추가']:[]),...s.map(i=>i.n)].join(', '),'합계: '+(full?'250만원(풀패키지)':t+'만원')];
+ if(s.some(i=>i.prof))L.push('소속: '+$('aff').value.trim(),'직급: '+$('rank').value.trim(),'성격: '+$('per').value.trim(),'특징: '+$('feat').value.trim());
+ L.push('보낼 사진: '+[...$('ph').querySelectorAll('b')].map(b=>b.firstChild.textContent).join(', '));
+ const txt=L.join('\n');$('out').textContent=txt;$('out').hidden=false;
+ (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{$('toast').classList.add('on');setTimeout(()=>$('toast').classList.remove('on'),2200)}).catch(()=>{const r=document.createRange();r.selectNodeContents($('out'));const g=getSelection();g.removeAllRanges();g.addRange(r)});
+};
+</script>
+</body>
+</html>
