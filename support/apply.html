@@ -97,8 +97,8 @@ const IT=[
  {k:'mine',n:'광산 모션',p:30,d:'광산에서 내 모습으로 곡괭이질',ph:'body'},
  {k:'sell',n:'판매 모션',p:30,d:'판매 칸에서 내 모습으로 일해요',ph:'body'},
  {k:'forge',n:'가공 모션',p:30,d:'가공 칸에서 내 모습으로 망치질',ph:'body'},
- {k:'card',n:'캐릭터 카드',p:30,d:'직원 창에서 보는 수집 카드',ph:['🧍','카드용 전신 사진','머리부터 발끝까지 나오게 1장'],prof:1},
- {k:'badge',n:'캐릭터 뱃지',p:40,d:'카드 뒷면의 나만의 원형 뱃지',ph:['🤳','뱃지용 셀카','얼굴이 잘 보이게 1장'],prof:1}];
+ {k:'card',n:'캐릭터 카드',p:30,d:'직원 창에서 보는 수집 카드 · 조건: 등록 + 이름',ph:['🧍','카드용 전신 사진','머리부터 발끝까지 나오게 1장'],prof:1},
+ {k:'badge',n:'캐릭터 뱃지',p:40,d:'카드 뒷면의 원형 뱃지 · 조건: 등록 + 이름 + 카드',ph:['🤳','뱃지용 셀카','얼굴이 잘 보이게 1장'],prof:1}];
 const $=id=>document.getElementById(id);
 $('items').innerHTML=`<label class="it" id="baseIt"><input type="checkbox" checked disabled><div class="t"><b>캐릭터 추가</b><small>기본 항목 · 내 프로필 그림이 직원으로 들어가요</small></div><span class="p">50만원</span></label>`+IT.map(i=>`<label class="it"><input type="checkbox" value="${i.k}"><div class="t"><b>${i.n}</b><small>${i.d}</small></div><span class="p">+${i.p}만원</span></label>`).join('');
 const regNew=()=>document.querySelector('input[name=reg]:checked').value==='new';
@@ -114,7 +114,10 @@ function draw(){
  $('ph').innerHTML=ph.length?ph.map(p=>`<div><em>${p[0]}</em><div><b>${p[1]}<span class="rp">RP</span></b><span>${p[2]}</span></div></div>`).join(''):'<p class="empty">항목을 고르면 필요한 사진이 여기에 나와요.</p>';
  $('go').disabled=!(regNew()||s.length);
 }
-document.addEventListener('change',draw);draw();
+const NEED={card:['name'],badge:['name','card']};
+document.addEventListener('change',e=>{const t=e.target;if(t.closest&&t.closest('#items')&&t.value){const ck=v=>document.querySelector('#items input[value='+v+']');
+ if(t.checked&&NEED[t.value])NEED[t.value].forEach(v=>ck(v).checked=true);
+ if(!t.checked)for(const k in NEED)if(NEED[k].includes(t.value))ck(k).checked=false;}draw()});draw();
 $('go').onclick=()=>{
  const nm=$('nm').value.trim();if(!nm){$('err').textContent='이름을 적어 주세요.';$('nm').focus();return}$('err').textContent='';
  const {s,t,full}=total();
