@@ -1478,7 +1478,8 @@ const BODY=SUVK.length?SUVK[0]:Math.max(0,CARS.findIndex(c=>c[0]==='보디')),SU
 function flPick(){MFN=[];const n=nBody(),mx=dMax(),full=n>=mx;const one=k=>{const c=CARS[k],h=(S.fleet||[]).filter(x=>x===k).length;return `<div class="wcrow"><span class="flc" style="background-image:url(${cIc(c)})"></span><div class="grow"><b>${c[0]}</b> <span class="tag">🚚 배송팀</span>${h?` <span class="tag g">${h}대 있음</span>`:''}<br><span class="sub">짐칸 ${F(fLoad(k))}개 · ${Math.round(fSpd(k))}km/h · 수입 +${carPct(k)/2}%</span></div><button class="btn ${full||S.money<c[1]?'no':'pri'}" onclick="mGo(${(MFN.push(()=>flBuy(k)),MFN.length-1)})">${full?'가득':'사기'}<small>${W(c[1])}</small></button></div>`;};
  modal(`<h2>🚐 법인차 사기 <span class="tag g">${S.fleet.length} / ${fleetMax()}대</span></h2><div class="wcl">${SUVK.map(one).join('')}</div>`,[['닫기',null,'pri']]);}
 function flBuy(k){k=SUVK.includes(+k)?+k:BODY;const n=nBody(),mx=dMax();if(n>=mx){toast('🚙 SUV는 🚚 배송팀 최대 인원('+mx+'명)만큼만 살 수 있어요');flPick();return;}if(!pay(CARS[k][1])){flPick();return;}flD(0);S.fleet.push(k);S.flD.push(100);S.flN=(S.flN||0)+1;save();R();toast('🚐 법인차 '+CARS[k][0]+' 등록! 짐칸 '+F(fLoad(k))+'개');flPick();}
-function flSell(j){j=+j;const k=S.fleet[j];if(k==null)return;if(carBusy().has(j)){toast('운행 중인 차는 팔 수 없어요. 돌아오면 팔아 주세요');return;}
+function flAst(){const A=SUVK[0];if(A==null||!Array.isArray(S.fleet))return;if(S.fleet.includes(A))return;if(S.fleet.length>=dMax()&&S.fleet.length)return;S.fleet.push(A);if(!Array.isArray(S.flD))S.flD=[];S.flD[S.fleet.length-1]=100;}
+function flSell(j){j=+j;const k=S.fleet[j];if(k==null)return;if(k===SUVK[0]&&S.fleet.filter(x=>x===k).length<=1){toast('🚙 기본 법인차 아스트론 1대는 팔 수 없어요');return;}if(carBusy().has(j)){toast('운행 중인 차는 팔 수 없어요. 돌아오면 팔아 주세요');return;}
  const v=Math.round(CARS[k][1]*FLEET_SELL);modal(`<h2>🚐 법인차 팔기</h2><p>${CARS[k][0]}을(를) <b>${W(v)}</b>(차값의 ${FLEET_SELL*100}%)에 팔까요?</p>`,[['팔기',()=>{if(S.fleet[j]!==k)return;flD(0);S.fleet.splice(j,1);S.flD.splice(j,1);for(const f in S.dl||{}){const d=S.dl[f];if(d.c>j)d.c--;else if(d.c===j)d.c=-2;}S.money+=v;save();R();toast('🚐 '+CARS[k][0]+' 팔았어요 (+'+W(v)+')');},'pri'],['그만두기']]);}
 /* ===== 제작품 배송(봉다방처럼) =====
  🚚 배송팀이 있으면 지도 구역에서 배송 주문이 들어옴(SHIP_EVERY초에 하나꼴, 최대 배송팀 인원만큼, SHIP_AGE초 지나면 사라짐).
@@ -3422,7 +3423,7 @@ if(!S.cg174){S.cg174=1;S.ceil=(S.ceil||0)+100;try{save();}catch(e){}setTimeout((
 S.fever=0;S.ev={k:'',t:0};if(!S.seen)S.seen=1;if(S.wcar&&S.wcar.want&&!(S.wcar.who||[]).length){S.wcar.want=0;S.wcar.t=0;}
 {let a=false;try{a=!localStorage.getItem(TUT_KEY);}catch(e){}if(NEWG){$('mBg').style.display='none';startAsk(a);}else if(a){$('mBg').style.display='none';tutStart();}patchChk(a);}
 setFx(FXON);
-aqSeen=Math.floor(S.got.aqua||0);if(!S.s2g){S.s2g=1;if(!Array.isArray(S.mailIn))S.mailIn=[];S.mailIn.push({id:'s2-open',to:'all',t:'🎉 시즌2 오픈 선물',b:'',r:{selSp:1}});try{save();}catch(e){}}setTimeout(gangBar,500);
+aqSeen=Math.floor(S.got.aqua||0);try{flAst();}catch(e){}if(!S.s2g){S.s2g=1;if(!Array.isArray(S.mailIn))S.mailIn=[];S.mailIn.push({id:'s2-open',to:'all',t:'🎉 시즌2 오픈 선물',b:'',r:{selSp:1}});try{save();}catch(e){}}setTimeout(gangBar,500);
 let tAch=0;let tMgrR=0,tU=0;
 let tPrev=Date.now(),tRate=Date.now(),tSave=Date.now(),tRoll=Date.now();
 /* 후원 광고: 화면 보고 있는 플레이 10분마다 (패치노트엔 안 적음) */
