@@ -933,22 +933,22 @@ const SELL_R=16, SW_BASE=50000;
 const bossX=()=>+((1+(S.co||1))*(typeof bossMul==='function'?bossMul():1)).toFixed(2), BOSS_SELL=4;
 /* 채굴 알바 등급: p 뽑힐 확률, x 채굴량 배수, w 월급 */
 /* 1.1.3: 등급 10단계 (각 등급에 + 추가). 옛 저장의 S/A/B/C/D는 그대로 */
-const GRADE={'S+':{p:.002,x:5,w:40000,c:'#ff3df0'},S:{p:.008,x:4,w:30000,c:'#ff5d73'},'A+':{p:.01,x:3.2,w:22000,c:'#ff9a3d'},A:{p:.03,x:2.5,w:16000,c:'#f2c14e'},'B+':{p:.05,x:2.1,w:13000,c:'#a6e35a'},B:{p:.10,x:1.7,w:10000,c:'#4fd17a'},'C+':{p:.08,x:1.5,w:8500,c:'#4fe0d6'},C:{p:.22,x:1.3,w:7000,c:'#5cb6ff'},'D+':{p:.10,x:1.15,w:6000,c:'#c4cbc8'},D:{p:.40,x:1,w:5000,c:'#9aa3a0'}};
-const GORD=['S+','S','A+','A','B+','B','C+','C','D+','D'], SEV=3;
+const GRADE={'EX+':{p:0,x:7.5,w:75000,c:'#ffd84a'},EX:{p:0,x:6.2,w:55000,c:'#3de8ff'},'S+':{p:.002,x:5,w:40000,c:'#ff3df0'},S:{p:.008,x:4,w:30000,c:'#ff5d73'},'A+':{p:.01,x:3.2,w:22000,c:'#ff9a3d'},A:{p:.03,x:2.5,w:16000,c:'#f2c14e'},'B+':{p:.05,x:2.1,w:13000,c:'#a6e35a'},B:{p:.10,x:1.7,w:10000,c:'#4fd17a'},'C+':{p:.08,x:1.5,w:8500,c:'#4fe0d6'},C:{p:.22,x:1.3,w:7000,c:'#5cb6ff'},'D+':{p:.10,x:1.15,w:6000,c:'#c4cbc8'},D:{p:.40,x:1,w:5000,c:'#9aa3a0'}};
+const GORD=['EX+','EX','S+','S','A+','A','B+','B','C+','C','D+','D'], SEV=3;
 /* 교육: 지금 등급 → 다음 등급, c 교육비, p 성공 확률. 실패하면 교육비만 나감 */
-const TRAIN={D:{to:'D+',c:50000,p:.7},'D+':{to:'C',c:70000,p:.7},C:{to:'C+',c:150000,p:.65},'C+':{to:'B',c:200000,p:.62},B:{to:'B+',c:500000,p:.45},'B+':{to:'A',c:700000,p:.45},A:{to:'A+',c:1500000,p:.32},'A+':{to:'S',c:2000000,p:.31},S:{to:'S+',c:5000000,p:.1}};
+const TRAIN={D:{to:'D+',c:50000,p:.7},'D+':{to:'C',c:70000,p:.7},C:{to:'C+',c:150000,p:.65},'C+':{to:'B',c:200000,p:.62},B:{to:'B+',c:500000,p:.45},'B+':{to:'A',c:700000,p:.45},A:{to:'A+',c:1500000,p:.32},'A+':{to:'S',c:2000000,p:.31},S:{to:'S+',c:5000000,p:.1},'S+':{to:'EX',c:20000000,p:.05},EX:{to:'EX+',c:50000000,p:.03}};
 const lowIdx=()=>{for(const g of GORD.slice().reverse()){if(!TRAIN[g])continue;const i=S.ws.findIndex((x,j)=>x===g&&!isBoss(j)&&!isVac(j));if(i>=0)return i;}return -1;};
 function trainDo(i){const g=S.ws[i],t=TRAIN[g],ok=Math.random()<t.p;if(ok)S.ws[i]=t.to;else S.trainF=(S.trainF||0)+1;S.trainN=(S.trainN||0)+1;return [ok,g,t.to];}
 /* 1.6.0 베타: 그냥 고용(🎫 D급 티켓)은 D등급 고정. 좋은 등급은 ⭐ 스카우트(뽑기)로 */
 function rollGrade(){return 'D';}
 /* 스카우트 등급 확률(%) — D, D+, C, C+, B, B+, A, A+, S, S+ */
-const RC_P={D:40,'D+':22,C:16,'C+':10,B:6,'B+':3.5,A:1.6,'A+':.6,S:.25,'S+':.05};
-const SC_P={D:30,'D+':14,C:18,'C+':10,B:12,'B+':7,A:5,'A+':2.5,S:1.2,'S+':.3};
+const RC_P={D:40,'D+':22,C:16,'C+':10,B:6,'B+':3.5,A:1.6,'A+':.6,S:.25,'S+':.05,EX:0,'EX+':0};
+const SC_P={D:30,'D+':14,C:18,'C+':10,B:12,'B+':7,A:5,'A+':2.5,S:1.2,'S+':.3,EX:0,'EX+':0};
 function rollScout(){let r=Math.random()*100;for(const g of [...GORD].reverse()){r-=SC_P[g];if(r<=0)return g;}return 'D';}
 /* 성급(봉다방과 같은 방식): 얼굴(캐릭터)마다 ★0~5. 이미 있는 직원이 또 나오면 등급과 상관없이 조각 2개(등급은 안 바뀜). 조각 2/3/4/6/8개로 돌파 */
 const STAR_X=[1,1.2,1.45,1.75,2.1,2.5],STAR_PC=[30,60,100,150,200],STAR_MAX=5,DUP_PC=2;
 /* 2.0.0c: 중복으로 뽑히면 D+ ~ 지금 등급 사이에서 등급이 뜨고(스카우트 확률 비율), 뜬 등급만큼 전용 조각 + 그 10% 통용 조각(S.cpc). 통용 10개 = 아무 직원 전용 조각 1개 */
-const PC_G={D:80,'D+':100,C:130,'C+':170,B:220,'B+':300,A:420,'A+':600,S:840,'S+':1260},CPC_R=.1,CPC_X=10;
+const PC_G={D:80,'D+':100,C:130,'C+':170,B:220,'B+':300,A:420,'A+':600,S:840,'S+':1260,EX:1800,'EX+':2600},CPC_R=.1,CPC_X=10;
 function dupG(cur){const a=GORD.indexOf(cur),b=GORD.indexOf('D+'),L=a>=b?[cur]:GORD.slice(a,b+1);let r=Math.random()*L.reduce((s,g)=>s+SC_P[g],0);for(const g of L){r-=SC_P[g];if(r<=0)return g;}return L[L.length-1];}
 const fst=f=>{if(!S.fst)S.fst={};return S.fst[f]||(S.fst[f]={s:0,pc:0});};
 const stOf=i=>(S.fst&&S.fst[S.wimg[i]]&&S.fst[S.wimg[i]].s)||0, starX=i=>STAR_X[stOf(i)];
@@ -966,7 +966,7 @@ const LV_MAX=50,TR_MAX=110,TR_MIN=30,LV_MS=10,LV_MC=2,XP_OFF=.5;
 const lvNeed=n=>Math.round(7.6*Math.pow(n,2.15));          /* Lv1→2 8초 … Lv49→50 약 3.1시간. 쉬지 않고 일하면 Lv10 ≈ 1시간, Lv30 ≈ 30시간, Lv50 ≈ 150시간 */
 const trLbl=(f,k)=>(f===46&&k===4)?'리더쉽':TR_N[k];           /* 월현 카드는 손기술 자리를 '리더쉽'으로 받음(효과는 손기술과 같음) */
 function trMig(){if(S.trV2)return;S.trV2=1;for(const f in (S.lvd||{})){const o=S.lvd[f];if(o&&Array.isArray(o.t)&&!o.v){o.v=2;o.t=o.t.map(v=>Math.min(TR_MAX,(v|0)+TR_MIN));}}}
-function lvO(f){if(!S.lvd)S.lvd={};let o=S.lvd[f];if(!o||!Array.isArray(o.t)){const j=S.wimg.indexOf(f),g=j>=0?S.ws[j]:'D',b=Math.max(0,9-GORD.indexOf(g));o=S.lvd[f]={v:3,l:1,x:0,g:[0,0,0,0,0,0],t:TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4))};}return o;}
+function lvO(f){if(!S.lvd)S.lvd={};let o=S.lvd[f];if(!o||!Array.isArray(o.t)){const j=S.wimg.indexOf(f),g=j>=0?S.ws[j]:'D',b=Math.max(0,GORD.length-1-GORD.indexOf(g));o=S.lvd[f]={v:3,l:1,x:0,g:[0,0,0,0,0,0],t:TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4))};}return o;}
 const lvOf=i=>lvO(S.wimg[i]).l, roleTr=r=>ROLE_TR[r||'m']||ROLE_TR.m;
 const TR_CAP0=80,TR_GROW=30,EQ_TP=20.5,TRM=5;/* 장비 S+ +10 한 칸 = +10.25, 4칸 +41(S+ 기본 39~42라 늘 80). 기본+장비 80까지, 성장 +30 → 110 */
 const eqTf=f=>{const o=eqOf(f);let v=0;for(const [s] of EQS)v+=eqVal(eqById(o[s]));return v*EQ_TP;};
@@ -974,7 +974,7 @@ const trV=(f,k)=>{const o=lvO(f);return Math.min(TR_CAP0,(o.t[k]||0)+eqTf(f))+((
 const trInc=l=>Math.floor((l-1)*TR_GROW/(LV_MAX-1))-Math.floor((l-2)*TR_GROW/(LV_MAX-1));
 function trGrow(o,k){if(!Array.isArray(o.g))o.g=[0,0,0,0,0,0];o.g[k]+=trInc(o.l);}
 function trReplay(o,r){o.g=[0,0,0,0,0,0];const k=roleTr(r)[0];for(let l=2;l<=o.l;l++)o.g[k]+=trInc(l);}
-function trMig3(){for(const f in (S.lvd||{})){const o=S.lvd[f];if(!o||!Array.isArray(o.t))continue;const j=S.wimg.indexOf(+f),g=j>=0?S.ws[j]:'D',b=Math.max(0,9-GORD.indexOf(g));o.v=3;o.t=TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4));trReplay(o,j>=0?S.wrole[j]:'m');}}
+function trMig3(){for(const f in (S.lvd||{})){const o=S.lvd[f];if(!o||!Array.isArray(o.t))continue;const j=S.wimg.indexOf(+f),g=j>=0?S.ws[j]:'D',b=Math.max(0,GORD.length-1-GORD.indexOf(g));o.v=3;o.t=TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4));trReplay(o,j>=0?S.wrole[j]:'m');}}
 const trOf=(i,k)=>trV(S.wimg[i],k);
 const trK=v=>Math.max(0,v-TR_MIN)/(TR_MAX-TR_MIN), trX=i=>1+TRM*trK(trOf(i,roleTr(S.wrole[i])[0]));   /* 지금 부서 주특성: 30 → ×1, 110 → ×2 */
 /* 칭호: 특성이 TTL_AT을 넘으면 그 특성의 칭호 */
@@ -990,7 +990,7 @@ function lvStep(dt){for(let i=0;i<S.ws.length;i++){const f=S.wimg[i];if(typeof f
 /* 🔄 특성 초기화권: 레벨은 그대로, 지금까지 레벨업으로 받은 점수를 지금 부서 성격대로 다시 나눔 */
 const TRR_C=100000000;
 function trReset(i){i=+i;const f=S.wimg[i],o=lvO(f);if((S.trR||0)<1){toast('🔄 특성 초기화권이 없어요. 상점 › 🛒 일반상점에서 살 수 있어요');return false;}
- const g=S.ws[i],b=Math.max(0,9-GORD.indexOf(g)),p=roleTr(S.wrole[i]);o.t=TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4));trReplay(o,S.wrole[i]);S.trR--;S.trRN=(S.trRN||0)+1;return true;}
+ const g=S.ws[i],b=Math.max(0,GORD.length-1-GORD.indexOf(g)),p=roleTr(S.wrole[i]);o.t=TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4));trReplay(o,S.wrole[i]);S.trR--;S.trRN=(S.trRN||0)+1;return true;}
 /* 2.0.0b(선이 2026-11-27): 장비 = 직원 개인 장비 3칸(⛑️ 머리 · 🔧 도구 · 🦺 옷). 🛡️ 장비 뽑기(일반 돈)로 얻고, 💎 강화석으로 +0~+10 강화(실패해도 안 떨어짐). 레벨 제한 없음. 직원 얼굴(S.wimg)마다 S.weq[얼굴]={h,t,c: 장비 id} */
 const EQS=[['h','⛑️','머리'],['t','🔧','도구'],['c','🦺','옷'],['a','💍','액세서리']],EQO=[['h','머리'],['c','옷'],['t','도구'],['a','액세서리']];
 const EQ_NM={h:['낡은 안전모','안전모','헤드랜턴 안전모','강화 헬멧','티타늄 헬멧','황금 헬멧'],t:['녹슨 공구','공구 세트','전동 드릴','정밀 공구','다이아 드릴','황금 드릴'],c:['헌 작업복','작업복','방진복','방열복','특수 작업복','황금 작업복'],a:['고무 팔찌','가죽 장갑','은 반지','금 목걸이','다이아 반지','황금 시계']};
@@ -1035,7 +1035,7 @@ function eqMig(){if(S.eqV2)return;S.eqV2=1;if(S.eq){let k=0;for(const r in S.eq)
 function eqPick(i,s){i=+i;const f=S.wimg[i],cur=eqOf(f)[s],sl=eqSl(s),L=eqInv().filter(e=>e.s===s).sort((a,b)=>eqVal(b)-eqVal(a)||a.id-b.id);MFN=[];const G=fn=>{MFN.push(fn);return MFN.length-1;};
  modal(`<h2>${sl[2]} 장비 고르기</h2>${L.length?`<div class="wcl">${L.map(e=>{const w=eqWho(e.id),me=e.id===cur;return `<div class="wcrow"><span style="font-size:34px;width:40px;text-align:center;line-height:1">${eqIc(e)}</span><div class="grow"><b style="color:${eqCol(e)}">${eqTag(e)}</b> <b>${eqNm(e)}</b><br><span class="sub">📈 모든 특성 ${eqPct(eqVal(e))}${w>=0&&!me?' · 👤 '+escH(eqWN(w))+' 착용 중':''}</span></div>${me?`<button class="btn" onclick="mGo(${G(()=>{eqOff(e.id);save();R();workerMenu(i);})})">빼기</button>`:`<button class="btn pri" onclick="mGo(${G(()=>{eqWear(i,e.id);save();R();workerMenu(i);})})">끼기</button>`}</div>`;}).join('')}</div>`:'<p>이 칸에 낄 장비가 없어요. 🎟️ 뽑기의 🛡️ 장비 뽑기로 얻어요.</p>'}`,[...(L.length?[]:[['🎟️ 장비 뽑기',()=>{S.tab='gacha';tabJump=1;R();}]]),['← 돌아가기',()=>workerMenu(i)]]);}
 function lvReset(i){i=+i;const f=S.wimg[i];if((S.lvR||0)<1){toast('🔄 레벨 초기화권이 없어요. 상점 › 🛒 일반상점에서 살 수 있어요');return;}
- modal(`<h2>🔄 레벨 초기화</h2><p><b>${escH(eqWN(f))}</b>의 레벨을 <b>Lv.1</b>로, 특성을 처음 상태로 되돌려요. 칭호도 사라져요. 초기화권 1장을 써요(가진 것 ${S.lvR}장).</p>`,[['초기화',()=>{const g=S.ws[i],b=Math.max(0,9-GORD.indexOf(g));S.lvd[f]={v:3,l:1,x:0,g:[0,0,0,0,0,0],t:TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4))};S.lvR--;S.lvRN=(S.lvRN||0)+1;save();R();toast('🔄 레벨을 처음으로 되돌렸어요');workerMenu(i);},'pri'],['취소',()=>workerMenu(i)]]);}
+ modal(`<h2>🔄 레벨 초기화</h2><p><b>${escH(eqWN(f))}</b>의 레벨을 <b>Lv.1</b>로, 특성을 처음 상태로 되돌려요. 칭호도 사라져요. 초기화권 1장을 써요(가진 것 ${S.lvR}장).</p>`,[['초기화',()=>{const g=S.ws[i],b=Math.max(0,GORD.length-1-GORD.indexOf(g));S.lvd[f]={v:3,l:1,x:0,g:[0,0,0,0,0,0],t:TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4))};S.lvR--;S.lvRN=(S.lvRN||0)+1;save();R();toast('🔄 레벨을 처음으로 되돌렸어요');workerMenu(i);},'pri'],['취소',()=>workerMenu(i)]]);}
 function eqGShow(out){modal(`<h2>🛡️ 장비 뽑기 ${out.length}회</h2><div class="eqgr">${out.map(e=>`<div style="--ec:${eqCol(e)}"><i>${eqIc(e)}</i><b style="color:${eqCol(e)}">${e.set?'세트':EQ_G[e.g]}</b><small>${eqNm(e)}${e.pity?' · 보장':''}</small></div>`).join('')}</div>`,[['🎒 인벤토리',()=>{S.tab='inv';tabJump=1;R();}],['확인',null,'pri']]);}
 /* 📋 일일업무: 날짜(이 기기 시간)가 바뀌면 새로. 다 하면 📇 명함 DLY_MC장 */
 const DLY=[['play','⏱️','30분 켜 두기',()=>S.playT||0,1800,v=>Math.floor(v/60)+'분'],['scout','⭐','직원 스카우트 1번',()=>S.scoutN||0,1],['eqg','🛡️','장비 뽑기 1번',()=>S.eqGN||0,1],['equp','🔨','장비 강화 1번',()=>S.eqT||0,1],['train','🎓','세미나 교육 1번',()=>S.trainN||0,1],['dis','♻️','장비 분해 1번',()=>S.disN||0,1]],DLY_MC=5,DLY_NEED=5;
@@ -1642,9 +1642,9 @@ function wsStep(dt){if(S.wsCd>0)S.wsCd=Math.max(0,S.wsCd-dt);
  if(T.ph===1){T.ph=2;T.T=WS_STAY;return;}if(T.ph===2){T.ph=3;T.T=wsTT(T.z);return;}wsDone();}
 function wsDone(){const T=S.wsTrip;S.wsTrip=null;S.wsCd=WS_CD;S.wsN=(S.wsN||0)+1;const sp=wsSpot(T.z),res=[];if(!S.wsB)S.wsB={};
  for(const f of T.f){const i=S.wimg.indexOf(f);if(i<0)continue;const g0=S.ws[i];let up=0;for(let k=0;k<WS_TRAIN&&TRAIN[S.ws[i]];k++){const [ok]=trainDo(i);if(ok)up++;}
-  S.wloy[i]=Math.min(100,(S.wloy[i]??LOY_START)+WS_LOY);S.wfat[i]=0;S.wrest[i]=0;S.wforce[i]=0;S.wburn[i]=0;if(g0!=='S+')S.wsB[f]={t:sp.b,x:sp.x};res.push([i,g0,S.ws[i],up]);}
+  S.wloy[i]=Math.min(100,(S.wloy[i]??LOY_START)+WS_LOY);S.wfat[i]=0;S.wrest[i]=0;S.wforce[i]=0;S.wburn[i]=0;if(TRAIN[g0])S.wsB[f]={t:sp.b,x:sp.x};res.push([i,g0,S.ws[i],up]);}
  save();R();
- modal(`<h2>${sp.e} 워크숍 끝!</h2><p class="sub" style="margin:0 0 8px">${sp.n}에서 돌아왔어요. 충성도 +${WS_LOY}, 피로 0, ${mmss(sp.b)} 동안 효율 <b>+${Math.round(sp.x*100)}%</b>.</p><div class="wsres">${res.map(([i,g0,g1,up])=>`<div><img src="${wsrc(i)}" alt=""><b>${wNm(i)?escH(wNm(i)):g1+'등급'}</b><span><b style="color:${GRADE[g0].c}">${g0}</b>${g0!==g1?` ➜ <b style="color:${GRADE[g1].c}">${g1}</b>`:''}</span><small>${g0==='S+'?'충성도·피로만':`교육 ${up}/${WS_TRAIN} 성공`}</small></div>`).join('')}</div>`,[['닫기',null,'pri']]);}
+ modal(`<h2>${sp.e} 워크숍 끝!</h2><p class="sub" style="margin:0 0 8px">${sp.n}에서 돌아왔어요. 충성도 +${WS_LOY}, 피로 0, ${mmss(sp.b)} 동안 효율 <b>+${Math.round(sp.x*100)}%</b>.</p><div class="wsres">${res.map(([i,g0,g1,up])=>`<div><img src="${wsrc(i)}" alt=""><b>${wNm(i)?escH(wNm(i)):g1+'등급'}</b><span><b style="color:${GRADE[g0].c}">${g0}</b>${g0!==g1?` ➜ <b style="color:${GRADE[g1].c}">${g1}</b>`:''}</span><small>${!TRAIN[g0]?'충성도·피로만':`교육 ${up}/${WS_TRAIN} 성공`}</small></div>`).join('')}</div>`,[['닫기',null,'pri']]);}
 function wsMapSvg(){const M=GMAP;if(!M)return '<div class="sub">지도를 불러오지 못했어요.</div>';const T=S.wsTrip,zs=T?T.z:wsSelZ,rt=wsRoute(zs);
  return `<svg viewBox="0 0 ${M.w} ${M.h}"><image href="${M.bg}" width="${M.w}" height="${M.h}" style="image-rendering:pixelated"/><path d="${M.bd}" fill="none" stroke="rgba(255,255,255,.32)" stroke-width=".5"/><path d="${M.hw}" fill="none" stroke="#ffd060" stroke-width=".7" stroke-linejoin="round" opacity=".6"/>
  ${M.zones.filter(z=>WS_SPOT.some(o=>o.z===z.n)).map(z=>`<path d="${z.d}" class="zt${z.n===zs?' on':''}" data-a="${T?'':'wsZ'}" data-x="${z.n}" fill="${z.n===zs?'#3fe07a':'#5cb6ff'}"/>`).join('')}
@@ -2168,7 +2168,7 @@ let gxFlipAll=null;function scoutShow(out,n,rc){gxFlipAll=null;const tr=o=>o.dup
  el.className=base+'p1';T(450,()=>el.classList.add('glow'));
  if(top>=4){T(1150,()=>{el.style.setProperty('--gh',cTop);el.classList.add('glow2','h'+top);});T(2000,p2);}else T(1250,p2);}
 /* 확률은 ≡ 메뉴 > 안내 */
-function oddsShow(){modal(`<h2>🎟️ 직원 뽑기 확률</h2><div class="sec">⭐ 직원 스카우트</div><div class="gtab">${GORD.map(g=>`<div><b style="color:${GRADE[g].c}">${g}</b><br>${SC_P[g]}%</div>`).join('')}</div><div class="sec">성급</div><div class="gtab" style="grid-template-columns:repeat(5,1fr)">${STAR_PC.map((p,k)=>`<div>${stars(k+1,1)}<br>×${STAR_X[k+1]}<br>조각 ${p}</div>`).join('')}</div>`,[['닫기',null,'pri']]);}
+function oddsShow(){modal(`<h2>🎟️ 직원 뽑기 확률</h2><div class="sec">⭐ 직원 스카우트</div><div class="gtab">${GORD.filter(g=>SC_P[g]>0).map(g=>`<div><b style="color:${GRADE[g].c}">${g}</b><br>${SC_P[g]}%</div>`).join('')}</div><div class="sec">성급</div><div class="gtab" style="grid-template-columns:repeat(5,1fr)">${STAR_PC.map((p,k)=>`<div>${stars(k+1,1)}<br>×${STAR_X[k+1]}<br>조각 ${p}</div>`).join('')}</div>`,[['닫기',null,'pri']]);}
 
 const starReady=()=>S.wimg.filter(f=>{const o=S.fst&&S.fst[f];return o&&o.s<STAR_MAX&&o.pc>=STAR_PC[o.s];});
 function starAll(){let n=0,last=-1;for(const f of S.wimg)while(starUp(f)){n++;last=f;}save();R();if(n){$('mBg').style.display='none';starFx(last,n>1?n:0);}else toast('돌파할 수 있는 직원이 없어요');}
@@ -2713,7 +2713,7 @@ ACT.tkOpen=()=>{modal(tkCard().replace('<div class="card" id="tkCard">','<div>')
 ACT.pcQty=x=>{const f=+x;if(!S.wimg.includes(f))return 'skip';qtyBuy(`<img src="${wface(f)}" alt="" style="width:34px;height:34px;border-radius:50%;object-fit:cover;vertical-align:middle">`,escH(eqWN(f))+' 🧩',CPC_X,(S.cpc||0)/CPC_X,n=>{if(ACT.pcBuy(f+':'+n)!=='skip'){save();R();}});return 'skip';};
 ACT.pcNew=x=>{const f=+x;if(S.wimg.includes(f))return 'skip';modal(`<h2>🔓 영입</h2><div style="text-align:center"><img src="${wface(f)}" alt="" style="width:110px;height:110px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #3fd9c4"></div><div class="qtyv" style="justify-content:center;margin-top:10px"><span>🧩 ${F(PC_NEW)} <small style="color:var(--dim)">/ ${F(S.cpc||0)}</small></span></div>`,[['영입',()=>{ACT.pcBuy(f+':0');},(S.cpc||0)>=PC_NEW?'pri':'no'],['닫기']]);return 'skip';};
 ACT.scPrev=()=>{const own=new Set(S.wimg),L=POOLF.filter((f,k,a)=>a.indexOf(f)===k);
- modal(`<h2>👀 스카우트 미리보기</h2><div class="gtab">${GORD.map(g=>`<div><b style="color:${GRADE[g].c}">${g}</b><br>${SC_P[g]}%</div>`).join('')}</div><div class="pvg">${L.map(f=>`<span class="pvf ${own.has(f)?'own':''}"><img src="${wface(f)}" alt="">${own.has(f)?'<i>✓</i>':''}<b>${own.has(f)?escH(eqWN(f)):'?'}</b></span>`).join('')}</div>`,[['닫기',null,'pri']]);return 'skip';};
+ modal(`<h2>👀 스카우트 미리보기</h2><div class="gtab">${GORD.filter(g=>SC_P[g]>0).map(g=>`<div><b style="color:${GRADE[g].c}">${g}</b><br>${SC_P[g]}%</div>`).join('')}</div><div class="pvg">${L.map(f=>`<span class="pvf ${own.has(f)?'own':''}"><img src="${wface(f)}" alt="">${own.has(f)?'<i>✓</i>':''}<b>${own.has(f)?escH(eqWN(f)):'?'}</b></span>`).join('')}</div>`,[['닫기',null,'pri']]);return 'skip';};
 ACT.eqPrev=()=>{modal(`<h2>👀 장비 미리보기</h2><div class="gtab">${EQ_G.map((g,k)=>`<div><b style="color:${EQ_C[k]}">${g}</b><br>${EQG_P[k]}%</div>`).join('')}<div><b style="color:${SET_C}">🍀</b><br>${SET_P*100}%</div></div>
  <div class="pvq">${EQO.map(([s,n])=>`<div class="pvr"><b class="pvl">${eqSl(s)[1]} ${n}</b><div class="pvc">${EQ_NM[s].map((nm,g)=>`<span style="--ec:${EQ_C[g]}"><em>${EQ_G[g]}</em>${IMG['_장비_'+nm]?`<img class="eqim" src="${IMG['_장비_'+nm]}" alt="" style="font-size:28px">`:''}<b>${nm}</b><small>📈 ${eqPct(EQ_B[g])}~${eqPct(EQ_B[g]+EQ_PL*EQ_S[g])}</small></span>`).join('')}</div></div>`).join('')}
  <div class="pvr"><b class="pvl" style="color:${SET_C}">🍀 행운 세트 · 📇 명함 확률 증가</b><div class="pvc">${EQO.map(([s])=>`<span style="--ec:${SET_C}"><em>SET</em>${IMG['_장비_'+SET_NM[s]]?`<img class="eqim" src="${IMG['_장비_'+SET_NM[s]]}" alt="" style="font-size:28px">`:''}<b>${SET_NM[s]}</b><small style="color:${SET_C};font-weight:800">📇 명함 확률 +${Math.round((SET_X[1]-1)*100)}%</small><small>📈 ${eqPct(EQ_B[5])}~${eqPct(EQ_B[5]+EQ_PL*EQ_S[5])}</small></span>`).join('')}</div><div class="pvs">📇 명함 확률: ${[1,2,3,4].map(k=>`${k}개 <b style="color:${SET_C}">+${Math.round((SET_X[k]-1)*100)}%</b>`).join(' · ')}</div></div></div>`,[['닫기',null,'pri']]);return 'skip';};
@@ -2884,7 +2884,7 @@ const TIER_N=['','동','은','금','다이아','레인보우'],HAS_DLV=typeof SI
 const AG=[['money','💰 돈과 회사',3e6],['crew','👥 직원',3e7],['mine','⛏️ 광산과 이벤트',1e7],['craft','🛠️ 제작',3e7],HAS_DLV?['car','🚘 차와 배송',1e8]:['car','🚘 차',3e7],['life','⏰ 생활',3e6],['fail','🎖️ 실패 훈장',5e7],['top','👑 마스터',0]];
 const _stars=()=>Object.values(S.fst||{}).reduce((a,o)=>a+(o.s||0),0),_s5n=()=>Object.values(S.fst||{}).filter(o=>(o.s||0)>=5).length,_faces=()=>new Set(S.wimg.filter(f=>f>=0)).size;
 const _h=v=>Math.floor((v||0)/360)/10,_kinds=()=>Object.values(S.cr.made||{}).reduce((a,b)=>a+(b>0?1:0),0),_madeAll=()=>Object.values(S.cr.made||{}).reduce((a,b)=>a+(b||0),0),_sites=()=>HAS_DLV?SITE_K.filter(siteOpen).length:0;
-const _gi=g=>GORD.indexOf(g),_nSg=()=>S.ws.filter(g=>g[0]==='S').length,_nSp=()=>S.ws.filter(g=>g==='S+').length;
+const _gi=g=>GORD.indexOf(g),_nSg=()=>S.ws.filter(g=>g[0]==='S').length,_nSp=()=>S.ws.filter(g=>g==='S+'||g==='EX'||g==='EX+').length;
 const TRK=[];
 /* tk(묶음, id, 문양, 이름, 무엇을 세나, 단위, 값 함수, [[단계 id, 목표, 설명?, 값 함수?, 조건 함수?]×5], 덧붙일 것) */
 const tk=(g,id,k,n,dn,u,v,L,o)=>TRK.push(Object.assign({g,id,k,n,dn,u,v,f:g==='fail'?1:0,L:L.map(x=>({id:x[0],goal:x[1],d:x[2],v:x[3],c:x[4]}))},o||{}));
@@ -2895,7 +2895,7 @@ tk('money','tWage','gift','월급날','준 월급','원',()=>S.wages||0,[['wg1',
 tk('money','tMgr','clip','살림꾼','관리인','명',()=>S.ms.length,[['mg',1],['mg2',2],['mg3',3],['mg4',4],['mg5',4,'관리인 4명 · 회사 Lv.10',null,()=>S.ms.length>=4&&S.co>=10]]);
 tk('crew','tStaff','people','우리 식구','직원','명',()=>S.ws.length,[['w1',1,'첫 직원 고용'],['w8',8],['w16',16],['w24',24],['w32',32]]);
 tk('crew','tGrade','star','인재 양성','','',_nSg,[['wa',1,'A등급 이상 직원 1명',()=>S.ws.filter(g=>_gi(g)<=_gi('A')).length],['ws',1,'S등급 직원 1명',_nSg],['wsp',1,'S+등급 직원 1명',_nSp],
- ['wss',16,'직원 16명 이상 · 모두 S등급',_nSg,()=>S.ws.length>=16&&S.ws.every(g=>g[0]==='S')],['wsx',32,'직원 32명 이상 · 모두 S+',_nSp,()=>S.ws.length>=32&&S.ws.every(g=>g==='S+')]]);
+ ['wss',16,'직원 16명 이상 · 모두 S등급',_nSg,()=>S.ws.length>=16&&S.ws.every(g=>g[0]==='S')],['wsx',32,'직원 32명 이상 · 모두 S+',_nSp,()=>S.ws.length>=32&&S.ws.every(g=>g==='S+'||g==='EX'||g==='EX+')]]);
 tk('crew','tVac','umb','워라밸','유급 휴가 보내기','번',()=>S.vacN||0,[['vac1',1],['vac5',5],['vac20',20],['vac50',50],['vac100',100]]);
 tk('crew','tRc','ticket','인사팀장','새 직원 영입','번',()=>S.rcN||0,[['rc1',1],['rc5',5],['rc10',10],['rc30',30],['rc60',60]]);
 tk('crew','tSc','star','스카우트 중독','스카우트','번',()=>S.scoutN||0,[['sc1',1],['sc10',10],['sc100',100],['sc300',300],['sc1k',1000]]);
@@ -3157,7 +3157,7 @@ function cardShow(){modal(`<h2>🃏 아아멘 카드 <span class="tag">초안</s
  <div class="acpick">${AC_G.map((g,i)=>`<button style="--c:${AC_C[i]}" class="${i===5?'on':''}" onclick="acSet(${i})">${g}</button>`).join('')}</div><p class="sub" style="margin:0">카드를 누르면 뒤집혀요 · 버튼은 등급별 테두리 미리보기 · 능력치는 예시</p></div>`,[['← 베타 체험',()=>menuSub('beta')],['닫기',null,'pri']]);}
 /* 1.6.11 후원자 카드: 직원 창 버튼. 카드 등급·별은 그 직원의 지금 등급·성급 */
 const SCARD={46:{n:'월현',k:'월현',aff:'EMS 부원장 · 후원자 · Lv.90',st:[['채광',55],['운전',88],['리더쉽',95],['체력',80]],q:'다친 데 없죠? 제가 지켜볼게요!'},37:{n:'안가연',k:'안가연',aff:'교정공 · 후원자 · Lv.90',st:[['채광',82],['운전',88],['손기술',74],['체력',78]],q:'택시 왔습니다~ 어디로 모실까요?'},44:{n:'김현자',k:'김현자',aff:'경찰 · 후원자 · Lv.90',st:[['채광',76],['운전',86],['손기술',72],['체력',88]],q:'질서는 내가 지킨다!'},9:{n:'정유이',k:'정유이',aff:'봉다방 · 후원자 · Lv.90',st:[['판매',84],['손기술',76],['눈치',80],['체력',70]],q:'커피 나왔어요~ 맛있게 드세요!'},3:{n:'광순덕',k:'광순덕',aff:'카페 · 후원자 · Lv.90',st:[['채광',78],['운전',70],['손기술',74],['체력',90]],q:'오늘도 시원하게!'},6:{n:'주유건',k:'주유건',aff:'교정공 · 후원자 · Lv.90',st:[['채광',84],['운전',90],['손기술',76],['체력',80]],q:'길은 내가 고친다!'},34:{n:'황동만',k:'황동만',aff:'봉다방 · 후원자 · Lv.90',st:[['채광',72],['운전',68],['손기술',80],['체력',86]],q:'오늘도 신나게!'},5:{n:'이에르',k:'이에르',aff:'봉다방 · 후원자 · Lv.90',st:[['채광',70],['운전',66],['손기술',88],['체력',72]],q:'어서 오세요, 주인님!'},2:{n:'신재민',k:'신재민',aff:'곡괭 · 후원자 · Lv.90',st:[['채광',92],['운전',78],['손기술',65],['체력',70]],q:'오늘도 깨끗하게!'},32:{n:'나졸려',k:'나졸려',aff:'봉다방 · 후원자 · Lv.90',st:[['채광',80],['운전',72],['손기술',85],['체력',60]],q:'졸려…'}};
-function sCardShow(i,F){i=+i;const o=SCARD[F?F.f:S.wimg[i]];if(!o)return;const g=F?F.g:S.ws[i],gi=Math.max(0,AC_G.indexOf(g==='S+'?'S+':g.replace('+',''))),st=F?F.st:stOf(i),cf=F?F.f:S.wimg[i],cL=(S.lvd&&S.lvd[cf])||null,cLv=cL?cL.l:1,cTr=cL?trArr(cf):TR_N.map(()=>0);
+function sCardShow(i,F){i=+i;const o=SCARD[F?F.f:S.wimg[i]];if(!o)return;const g=F?F.g:S.ws[i],gi=Math.max(0,AC_G.indexOf(g==='S+'||g==='EX'||g==='EX+'?'S+':g.replace('+',''))),st=F?F.st:stOf(i),cf=F?F.f:S.wimg[i],cL=(S.lvd&&S.lvd[cf])||null,cLv=cL?cL.l:1,cTr=cL?trArr(cf):TR_N.map(()=>0);
  modal(`<h2>🃏 ${o.n} 카드</h2><div class="acwrap"><div class="acflip ${gi===5?'gSp':''}" id="acCd" style="--gc:${AC_C[gi]};--glow:${AC_L[gi]}px" onclick="this.classList.toggle('on')"><div class="accard"><div class="acside acfront"><img class="art" src="${IMG['_카드_'+o.k+'_앞']||''}" alt="${o.n}"><div class="grade"><b>${AC_G[gi]}</b></div>${st?`<div class="st5">${'★'.repeat(st)}</div>`:''}<div class="hint">눌러서 뒤집기 ↻</div></div>
  <div class="acside acback"><div class="top"><img class="f" src="${IMG['_카드_'+o.k+'_얼굴']||''}" alt="">${IMG['_카드_'+o.k+'_뱃지']?`<img class="bd" src="${IMG['_카드_'+o.k+'_뱃지']}" alt="">`:''}</div><div class="bd2"><div class="nm">${o.n}</div><div class="aff">${o.aff.replace(/Lv\.\d+/,'Lv.'+cLv)}</div><div class="acchips"><span class="r">${AC_G[gi]}</span><span>★${st}</span><span>후원</span></div>
  ${ttlOf(cf).length?`<div class="acttl">${ttlOf(cf).map(k=>TTL_N[k]).join(' · ')}</div>`:''}<div class="achex">${hexSvg(cTr,TR_N.map((n,k)=>trLbl(cf,k)),{s:150,w:132,col:'#e9a947'})}</div><div class="acq">"${o.q}"</div></div></div></div></div><p class="sub" style="margin:0">카드를 누르면 뒤집혀요 · 테두리는 ${o.n}의 지금 등급 색이에요</p></div>`,[[F?'← 관리자 창':'← 직원 창',()=>F?admTools('card'):workerMenu(i)],['닫기',null,'pri']]);}
