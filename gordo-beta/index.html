@@ -716,6 +716,9 @@ button.pcc{font:inherit;color:inherit;cursor:pointer}button.pcc:active{transform
 #bossB{display:none!important}#top{align-items:stretch!important}#homeB{align-self:stretch;height:auto!important;width:62px!important;font-size:30px!important;border-radius:14px!important}#wallet,#menuB{align-self:center}
 .wspick{gap:10px 9px!important;padding:8px 6px!important}.wspick .wk{margin-bottom:24px}.wspick .wk:has(.nm){margin-bottom:36px}
 .semhint{width:120px;height:120px;aspect-ratio:1;padding:0!important;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+#homeB{align-self:center!important;width:52px!important;height:52px!important;flex:none}
+#curr{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.shgrid .shcol.un{grid-column:1/-1!important}
 .dly{display:flex;flex-direction:column;gap:4px;margin-top:8px}.dly>div{display:flex;align-items:center;gap:8px;background:var(--tile);border:1px solid var(--tileB);border-radius:8px;padding:6px 9px}.dly>div b{flex:1;font-size:13px}.dly>div small{color:var(--dim);font-size:12px}.dly>div.ok{border-color:#3fd99a}.dly>div.ok small{color:#3fd99a}
 .eqgr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.eqgr>div{border:1.5px solid var(--ec);border-radius:8px;padding:6px 2px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}.eqgr i{font-style:normal;font-size:24px}.eqgr b{font-size:15px}.eqgr small{font-size:10px;color:var(--dim);line-height:1.2}@media (max-width:520px){.eqgr{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
@@ -922,7 +925,7 @@ const eqIc=e=>e.set?'🍀':eqSl(e.s)[1];
 function ivCell(e,btn){const w=eqWho(e.id),wi=w>=0?S.wimg.indexOf(w):-1;const inner=`<span class="ivi">${eqIc(e)}</span><b class="ivg" style="color:${eqCol(e)}">${e.set?'세트':EQ_G[e.g]}</b>${e.p?`<em class="ivp">+${e.p}</em>`:''}${wi>=0?`<img class="ivw" src="${wsrc(wi)}" alt="">`:''}`;
  return btn?`<button class="ivc" style="--ec:${eqCol(e)}" data-a="eqOpen" data-x="${e.id}" title="${eqNm(e)}">${inner}</button>`:`<span class="ivc" style="--ec:${eqCol(e)}">${inner}</span>`;}
 function eqOpen(id){const e=eqById(+id);if(!e)return;const st=S.stone||0,mx=e.p>=EQ_PL,need=EQ_ST[e.g],short=Math.max(0,need-st),w=eqWho(e.id),sl=eqSl(e.s);
- modal(`<h2 style="color:${eqCol(e)}">${eqNm(e)}</h2><div class="eqbig">${ivCell(e,0)}<div><b style="color:${eqCol(e)}">${e.set?'🍀 행운 세트':EQ_G[e.g]+'등급'} +${e.p}</b><br><span class="sub">${sl[2]} 장비 · ${w>=0?'👤 '+escH(eqWN(w))+' 착용 중':'안 낀 장비'}</span><br>⚙️ 작업량 <b>${eqPct(eqVal(e))}</b>${mx?'':` → <b>${eqPct(eqVal({g:e.g,p:e.p+1}))}</b>`}</div></div>
+ modal(`<h2 style="color:${eqCol(e)}">${eqNm(e)}</h2><div class="eqbig">${ivCell(e,0)}<div><b style="color:${eqCol(e)}">${e.set?'🍀 행운 세트':EQ_G[e.g]+'등급'} +${e.p}</b><br><span class="sub">${sl[2]} 장비 · ${w>=0?'👤 '+escH(eqWN(w))+' 착용 중':'안 낀 장비'}</span>${e.set?'<br>📇 <b style="color:'+SET_C+'">명함 확률 ↑</b> (세트 1개 ×'+SET_X[1]+' · 2개 ×'+SET_X[2]+' · 3개 ×'+SET_X[3]+' · 4개 ×'+SET_X[4]+')':''}<br>⚙️ 작업량 <b>${eqPct(eqVal(e))}</b>${mx?'':` → <b>${eqPct(eqVal({g:e.g,p:e.p+1}))}</b>`}</div></div>
  <div class="eqbar" style="--ec:${eqCol(e)}">${[...Array(10)].map((_,k)=>`<i class="${k<e.p?'on':''}"></i>`).join('')}</div>
  <p class="sub" style="margin:8px 0 0">${mx?'최고 강화(+'+EQ_PL+')예요.':`강화 +${e.p} → +${e.p+1} · 성공 <b>${Math.round(EQ_P[e.p]*100)}%</b> · 💎 강화석 ${F(need)}개 (가진 것 ${F(st)}개)`}</p>`,
   [...(mx?[]:short?[['💎 '+F(short)+'개 사서 강화 '+W(short*STONE_C),()=>eqUpGo(e.id,1),'pri']]:[['🔨 강화',()=>eqUpGo(e.id,0),'pri']]),['🗑️ 버리기',()=>ACT.eqDrop(e.id)],['닫기']]);}
@@ -1571,7 +1574,8 @@ const W=n=>F(n)+'원';
 /* 1.0.8: 차 1대 수입 보너스는 차값에 따라 다름 (사용자). 3천만 미만 1% · 1억 미만 2% · 2억 미만 3% · 5억 미만 4% · 5억 이상 5% */
 const carPct=k=>{const p=CARS[k]?CARS[k][1]:0;return p<3e7?1:p<1e8?2:p<2e8?3:p<5e8?4:5;};
 const bonus=()=>1+(S.cars.reduce((a,k)=>a+carPct(k),0)+(typeof fleetPct==='function'?fleetPct():0))/100;
-const car=()=>S.car>=0?CARS[S.car]:null,RS_X=.5,carRC=x=>Math.round(CARS[x][1]*RS_X);
+const car=()=>S.car>=0?CARS[S.car]:null,RS_X=.5,carRC=x=>Math.round(CARS[x][1]*RS_X),RS_TW=[0,1,3,5,10,20],RS_SUM=86400;let RS_D=0;const carRT=x=>{if(!RS_D)RS_D=CARS.reduce((a,c,k)=>a+(isCarDel(k)||isCarSp(k)?0:RS_TW[carPct(k)]),0)||1;return Math.round(RS_SUM*RS_TW[carPct(x)]/RS_D);},rsOf=x=>S.rsq&&S.rsq.x===x?S.rsq:null;
+function rsStep(dt){const q=S.rsq;if(!q)return;q.t+=dt;if(q.t>=q.T){S.rsq=null;if(!S.cars.includes(q.x))S.cars.push(q.x);toast('🔬 '+CARS[q.x][0]+' 연구 완료 · 수입 +'+carPct(q.x)+'%');try{save();R();}catch(e){}}}
 /* 차 내구도: 타는 동안 100→0 약 2시간 16분. 직원 차는 0 된 뒤 SCRAP_T초(약 34분) 지나면 폐차. 사장 차는 폐차 없이 타는 차 효과(창고·피버)만 꺼짐.
    수리비 = 차값 × REPAIR_X × 닳은 비율. 차 팔기 = 차값 × SELL_X */
 const DUR_DN=100/8192, SCRAP_T=2048, REPAIR_X=.25, SELL_X=.5, LOY_FIX=8;
@@ -1689,7 +1693,7 @@ function step(dt){
    dlStep(dt);sfStep(dt);if(S.sw){for(const c of SCAT){const p=scIdx(c.k).filter(sfOn).reduce((a,i)=>a+sfP1(i),0);if(p)sellBud(p*SELL_R*dt*ovX()*fcX('s'),scL(c));}}
    S.payT+=dt;if(S.payT>=PAY_T)payWage();}
  }
- S.playT=(S.playT||0)+dt;cdStep(dt);lvStep(dt);mcStep(dt);gmStep(dt);if(S.bm)S.bossT=(S.bossT||0)+dt;
+ S.playT=(S.playT||0)+dt;cdStep(dt);rsStep(dt);lvStep(dt);mcStep(dt);gmStep(dt);if(S.bm)S.bossT=(S.bossT||0)+dt;
  if(S.bm){const r=bossX()*almX()*bossHungry()*(1+gearEff())/WORK_T*dt*(1-failP());for(const [it,p] of DROPS)addItem(it,r*p*(it==='coal'?COAL_AVG:1));}
  if(S.ov>0){S.ov=Math.max(0,S.ov-dt);if(!S.ov)ovEnd();}else if(S.ovR>0)S.ovR=Math.max(0,S.ovR-dt);if(S.ovCd>0)S.ovCd=Math.max(0,S.ovCd-dt);if(S.rawCd)for(const k in S.rawCd)if(S.rawCd[k]>0)S.rawCd[k]=Math.max(0,S.rawCd[k]-dt);
  {const T=furT(),F=furStaff();if(!Array.isArray(S.fur.bk))S.fur.bk=[];for(let k=0;k<S.furN;k++){const i=F[k>>1],o=S.fo[k];if(i==null||!o||!sfOn(i)){S.fur.bk[k]=0;continue;}const g=FPROD[o],wd=o==='wood';S.fur.bk[k]=(S.fur.bk[k]||0)+sfP1(i)*ovX()*fcX('f')*dt/T;const n=Math.floor(Math.min(S.fur.bk[k],have(o),wd?1e15:have('coal'),wd?1e15:cap()-have(g)));
@@ -1850,17 +1854,13 @@ const VIEW={
   ${Object.keys(RAWP).map(k=>{const p=RAWP[k],g=PROD[k];return `<div class="car">${ic(k).replace('class="ic"','class="ic big"')}<div class="grow"><b>${ITEM[k].n} <span class="tag">개당 ${W(p)}</span></b><span class="sub">${g?ITEM[g].n+' 판매가 '+W(ITEM[g].npc)+'보다 비쌈':k==='wood'?'🔥 가공 화로에서 ⚫ 숯(총알 재료)으로 구워요':'화로 연료'} · 창고 <b data-v="inv:${k}"></b><br><b class="rawcd" data-v="rawCd:${k}"></b></span></div><div class="bb">${[10,100,1000].map(n=>costB(n+'개',p*n,'rawBuy',k+':'+n,'pri')).join('')}</div></div>`;}).join('')}</div>
   <div class="card"><h3>🛠️ 원자재로 만들면 <span class="tag">원석을 다 사서 만들 때</span></h3><table class="it"><tr><th>제작품</th><th>원석값</th><th>판매가</th><th>남는 비율</th></tr>${CRAFTS.map(k=>{const c=rawCost(k),s=ITEM[k].npc,m=(s/c-1)*100;return `<tr><td><span class="kn">${ic(k)}${ITEM[k].n}</span></td><td>${W(Math.round(c))}</td><td>${W(s)}</td><td class="${m>=0?'good':'warn'}">${m>=0?'+':''}${m.toFixed(1)}%</td></tr>`;}).join('')}</table></div>`;},
  bag(){const cell=k=>{const g=S.got[k]>0,r=ITEM[k].rare;return `<button class="slot ${g?'':'none'} ${r?'rare':''}" data-a="info" data-x="${k}">${ic(k)}<span class="nm">${g||!r?ITEM[k].n:'???'}</span><span class="ct" data-v="have0:${k}"></span></button>`;};
-  const all=ORES.concat(Object.values(PROD),MATS,CRAFTS,RARES),n=all.filter(k=>S.got[k]>0).length,cnt=L=>L.filter(k=>S.got[k]>0).length+' / '+L.length;
+  const all=RARES.slice(),n=all.filter(k=>S.got[k]>0).length,cnt=L=>L.filter(k=>S.got[k]>0).length+' / '+L.length;
   const an=TRK.filter(trVis).reduce((a,t)=>a+trTier(t),0),aN=TRK.filter(trVis).length*5;
   const sec=(t,tag,body,sub)=>`<div class="card"><h3>${t} <span class="tag g">${tag}</span>${sub?`<span class="tag">${sub}</span>`:''}</h3>${body}</div>`;
   return `<div class="dropr" id="sline" style="margin-top:0"><span class="chip">품목 <b>${n} / ${all.length}</b></span><span class="chip">차 <b>${S.cars.length} / ${CARN}</b></span><span class="chip" data-a="tab" data-x="ach" style="cursor:pointer">🏅 메달 <b>${an} / ${aN}</b></span></div>${S.toon?toonCard('bag'):''}
-  ${sec('⛏️ 광석',cnt(ORES),`<div class="grid">${ORES.map(cell).join('')}</div>`)}
-  ${sec('🔥 가공 제품',cnt(Object.values(PROD)),`<div class="grid">${Object.values(PROD).map(cell).join('')}</div>`)}
-  ${sec('🫧 재료',cnt(MATS),`<div class="grid">${MATS.map(cell).join('')}</div>`)}
-  ${sec('🛠️ 제작품',cnt(CRAFTS),`<div class="grid">${CRAFTS.map(cell).join('')}</div>`)}
   ${sec('🌟 최상급 제품',cnt(RARES),`<div class="grid">${RARES.map(cell).join('')}</div>`)}
-  <div class="card"><h3>🚘 사장 차 전시장 <span class="tag g">${S.cars.length} / ${CARN}</span>${car()?`<span class="tag">🚗 ${car()[0]} 타는 중</span>`:''}</h3>
-  ${CATROWS.map(r=>`<div class="sec">${r.cat} <small>${r.list.filter(i=>S.cars.includes(i)).length} / ${r.list.length}</small></div><div class="cshow">${r.list.map(i=>{const c=CARS[i],own=S.cars.includes(i),im=IMG['_새차45_'+c[0]]||cIc(c);return `<button class="cs ${own?'own':'none'} ${S.car===i?'ride':''}" data-a="${own?'rideCar':'carInfo'}" data-x="${i}"><img src="${im}" alt=""><span class="nm">${c[0]}</span>${S.car===i?'<em>🚗 타는 중</em>':own?'<em class="r">타기</em>':''}</button>`;}).join('')}</div>`).join('')}</div>`;},
+  <div class="card"><h3>🚘 차 전시장 <span class="tag g">${S.cars.length} / ${CARN}</span>${car()?`<span class="tag">🚗 ${car()[0]} 타는 중</span>`:''}</h3>
+  ${CATROWS.map(r=>`<div class="sec">${r.cat} <small>${r.list.filter(i=>S.cars.includes(i)).length} / ${r.list.length}</small></div><div class="cshow">${r.list.map(i=>{const c=CARS[i],own=S.cars.includes(i),im=IMG['_새차45_'+c[0]]||cIc(c);return `<button class="cs ${own?'own':'none'} ${S.car===i?'ride':''}" data-a="carInfo" data-x="${i}"><img src="${im}" alt=""><span class="nm">${c[0]}</span>${S.car===i?'<em>🚗 타는 중</em>':own?'<em class="r">타기</em>':''}</button>`;}).join('')}</div>`).join('')}</div>`;},
  car(){/* 1.6.5: 긴 줄(스포츠 16대)은 TREE_COLS칸마다 다음 줄로 접음 → 가로로 너무 길지 않게 */
   const colW=96,TC=Math.max(3,Math.min(TREE_COLS,Math.floor(((($('view')&&$('view').clientWidth)||400)-90-20+10)/colW))),rowH=80,pad=10,nw=86,nh=64,voff=(rowH-nh)/2,rows=CATROWS,
   colOf=i=>{const cc=CARCAT[i];return i===0?0:(cc.cat==='오토바이'?cc.t:cc.t+1);},
@@ -1871,11 +1871,11 @@ const VIEW={
    if(b.y>a.y+rowH/2&&b.x<a.x&&Math.floor(a.t/TC)!==Math.floor(b.t/TC)&&CARCAT[pv].cat===CARCAT[idx].cat){const x1=a.x+nw,y1=a.y+nh/2,ym=a.y+nh+voff,x2=b.x,y2=b.y+nh/2;lines+=`<path d="M${x1} ${y1} H${x1+5} V${ym} H${x2-5} V${y2} H${x2}" ${st} stroke-linejoin="round"/>`;}
    else{const x1=a.x+nw,y1=a.y+nh/2,x2=b.x,y2=b.y+nh/2;lines+=`<path d="M${x1} ${y1} C${x1+24} ${y1} ${x2-24} ${y2} ${x2} ${y2}" ${st}/>`;}}));
   const heads='';
-  let nodes='';rows.forEach(row=>row.list.forEach(idx=>{const c=CARS[idx],own=S.cars.includes(idx),unl=carUnlocked(idx),rid=S.car===idx,cls=own?'own':unl?'buy':'lk';nodes+=`<button class="tnode ${cls}" data-a="carInfo" data-x="${idx}" style="left:${pos[idx].x}px;top:${pos[idx].y}px;width:${nw}px;height:${nh}px"><i class="tt">T${pos[idx].t+1}</i><span class="vico" style="background-image:url(${cIc(c)})"></span><span class="tn">${c[0]}</span><span class="tp">${own?'🔬 완료':unl?'🔬 '+W(carRC(idx)):'🔒'} · +${carPct(idx)}%</span></button>`;}));
+  let nodes='';rows.forEach(row=>row.list.forEach(idx=>{const c=CARS[idx],own=S.cars.includes(idx),unl=carUnlocked(idx),rid=S.car===idx,cls=own?'own':unl?'buy':'lk';nodes+=`<button class="tnode ${cls}" data-a="carInfo" data-x="${idx}" style="left:${pos[idx].x}px;top:${pos[idx].y}px;width:${nw}px;height:${nh}px"><i class="tt">T${pos[idx].t+1}</i><span class="vico" style="background-image:url(${cIc(c)})"></span><span class="tn">${c[0]}</span><span class="tp">${own?'🔬 완료':rsOf(idx)?'⏳ '+mmss(Math.max(0,rsOf(idx).T-rsOf(idx).t)):unl?'🔬 '+W(carRC(idx)):'🔒'} · +${carPct(idx)}%</span></button>`;}));
   const pad0=pad,headH=0;
   return `<div class="card"><h3>🚘 차고 테크트리 <span class="tag g">${S.cars.length} / ${CARN}대</span><span class="tag">수입 +${Math.round((bonus()-1)*100)}%</span></h3>
   <div class="treebox"><div class="treelabs" style="padding-top:${pad}px">${rows.map((r,k)=>`<div style="height:${rowH*lineN[k]}px">${r.cat}</div>`).join('')}</div><div class="treewrap"><div class="tree" style="width:${Wd}px;height:${Hd}px"><svg width="${Wd}" height="${Hd}" style="position:absolute;inset:0;pointer-events:none">${lines}</svg>${heads}${nodes}</div></div></div>
-  <div class="sub" style="margin-top:8px">🟩 보유 · ⬜ 구매 가능 · ⬛ 잠김</div></div>`;}
+  </div>`;}
 };
 let shSel=-1;let drg=null,dragEnd=0,tabJump=0;
 document.addEventListener('pointerdown',e=>{const w=e.target.closest('.shcol .wk[data-x]');if(!w||(e.button||0)>0)return;drg={i:+w.dataset.x,x:e.clientX,y:e.clientY,el:w,gh:null};});
@@ -2263,7 +2263,7 @@ function wid(k){const [a,b]=k.split(':');if(a==='loy')return Math.min(1,(S.wloy[
 let tapAt=-1e9;
 let EL={v:[],w:[],c:[],chip:[],need:[],crew:[],wf:[],crn:[]};
 function grab(){const q=x=>[...document.querySelectorAll(x)];EL={v:q('[data-v]'),w:q('[data-w]'),c:q('[data-c]'),chip:q('[data-chip]'),need:q('[data-need]'),crew:q('.crew'),wf:q('[data-wf]'),crn:q('[data-crn]')};}
-function U(){if(ADMON){S.money=ADM_M;S.tk=ADM_T;}$('money').textContent=W(S.money);{const o=dlyO(),dn=DLY.filter(q=>dlyV(q)>=q[4]).length,c=`<button class="cpl dpl ${!o.got&&dn>=DLY.length?'rdy':''}" data-a="dlyOpen">📋 <b>${o.got?'✅':dn+'/'+DLY.length}</b></button><button class="cpl" data-a="tkOpen">📇 <b>${F(S.tk||0)}</b></button><button class="cpl" data-a="tab" data-x="shop">💎 <b>${F(S.stone||0)}</b></button><button class="cpl" data-a="tab" data-x="pcs">🧩 <b>${F(S.cpc||0)}</b></button>`,e=$('curr');if(e.innerHTML!==c)e.innerHTML=c;}
+function U(){if(ADMON){S.money=ADM_M;S.tk=ADM_T;}$('money').textContent=W(S.money);{const o=dlyO(),dn=DLY.filter(q=>dlyV(q)>=q[4]).length,c=`<button class="cpl dpl ${!o.got&&dn>=DLY.length?'rdy':''}" data-a="dlyOpen">📋 <b>${o.got?'✅':dn+'/'+DLY.length}</b></button><button class="cpl" data-a="tkOpen">📇 <b>${F(S.tk||0)}</b></button>`,e=$('curr');if(e.innerHTML!==c)e.innerHTML=c;}
  $('rate').innerHTML='수입 분당 '+W(rate)+(staff()?'<br>월급 분당 '+(S.strike?'<span class="warn">못 줌</span>':W(wageAll()*60/PAY_T)):'');
  document.body.classList.toggle('fever',S.fever>0);document.body.classList.toggle('ovn',S.ov>0);document.body.classList.toggle('ev-cop',S.ev.t>0&&S.ev.k==='cop');document.body.classList.toggle('ev-mob',S.ev.t>0&&S.ev.k==='mob');if(S.ev.t>0){const E=EVENTS[S.ev.k];$('evBar').textContent=E.e+' '+E.n+'! 제작품 '+(E.x>1?E.x+'배':'절반')+' 가격 · '+Math.ceil(S.ev.t)+'초 남음';}if(S.fever>0)$('fever').textContent='🔥 피버타임! 유저 손님이 비싸게 사 갑니다 · '+Math.ceil(S.fever)+'초 남음 (눌러서 판매)';
  EL.v.forEach(e=>{const t=val(e.dataset.v);if(e.textContent!==t)e.textContent=t;});
@@ -2405,7 +2405,7 @@ function carFor(x){x=+x;const c=CARS[x];if(!c)return;MFN=[];const G=fn=>{MFN.pus
  const L=S.ws.map((g,i)=>i).sort((a,b)=>(isBoss(b)|0)-(isBoss(a)|0)||GORD.indexOf(S.ws[a])-GORD.indexOf(S.ws[b])||a-b);
  modal(`<h2>🚗 ${c[0]} <span class="tag">${W(c[1])}</span></h2><div class="pcg">${L.map(i=>{const cw=isBoss(i)?car():S.wcarOwn[i]>=0&&CARS[S.wcarOwn[i]];return `<button class="pcc" style="font:inherit;color:inherit;cursor:pointer" onclick="mGo(${G(()=>carForDo(i,x))})"><img src="${wsrc(i)}" alt="" style="box-shadow:0 0 0 2px ${GRADE[S.ws[i]].c}"><b>${isBoss(i)?'👑 ':''}${escH(eqWN(S.wimg[i]))}</b><small>${cw?cw[0]:'-'}</small></button>`;}).join('')}</div>`,[['닫기']]);}
 function carForDo(i,x){const c=CARS[x];if(!c||!S.ws[i]||!S.cars.includes(x))return;if(isBoss(i)){if(S.car===x){toast('이미 타는 차예요');return;}if(!pay(c[1]))return;S.car=x;S.cdur[x]=100;$('mBg').style.display='none';save();R();toast('🚗 👑 '+c[0]);return;}if(S.wcarOwn[i]===x){toast('이미 타는 차예요');return;}if(!pay(c[1]))return;S.wcarOwn[i]=x;S.wcarDur[i]=100;S.wcarDead[i]=0;addLoy(i,LOY_CAR);if(S.wcar.want&&!wcarWho().length){S.wcar.want=0;S.wcar.t=0;S.wcar.who=[];}$('mBg').style.display='none';save();R();toast('🚗 '+eqWN(S.wimg[i])+' · '+c[0]);}
-function doBuyCar(x){x=+x;if(isCarDel(x)||isCarSp(x)||S.cars.includes(x))return;if(!carUnlocked(x)){toast('🔒 앞 차를 먼저 연구해요');return;}if(!pay(carRC(x)))return;S.cars.push(x);toast('🔬 '+CARS[x][0]+' 연구 완료 · 수입 +'+carPct(x)+'%');save();R();ACT.carInfo(x);}
+function doBuyCar(x){x=+x;if(isCarDel(x)||isCarSp(x)||S.cars.includes(x))return;if(!carUnlocked(x)){toast('🔒 앞 차를 먼저 연구해요');return;}if(S.rsq){toast('🔬 '+CARS[S.rsq.x][0]+' 연구 중이에요');return;}if(!pay(carRC(x)))return;S.rsq={x,t:0,T:carRT(x)};toast('🔬 '+CARS[x][0]+' 연구 시작 · '+mmss(carRT(x)));save();R();ACT.carInfo(x);}
 
 /* ===== 누르기 ===== */
 const ACT={
@@ -2423,8 +2423,8 @@ const ACT={
  train(x){trainAsk(x);return 'skip';},
  hireF(){if(!totRoom()){toast('정원('+totMax()+'명)이 꽉 찼어요');return;}if((S.fw||0)>=fMax()){toast('회사 '+S.co+'레벨에서는 주조 직원을 '+fMax()+'명까지 고용할 수 있습니다'+(S.co<CO_MAX?'. 회사 탭에서 승급하세요':''));return;}if(useD()){if(!staff()){S.payT=0;S.strike=0;}const g=rollGrade();wPush(g,'f');save();R();hireFx('f',g,S.wimg[S.wimg.length-1]);return 'skip';}},
  carInfo(x){x=+x;const c=CARS[x],own=S.cars.includes(x),ic=cIc(c),ph='';
-  modal(`<h2>${c[0]} <span class="tag">${c[2]}</span></h2><div class="cbig">${ic?`<span class="vico cf" style="background-image:url(${ic})"></span>`:'🚗'}${ph?`<img class="rp" src="${ph}" alt="" loading="lazy" onload="const p=this.previousElementSibling;if(p&&p.classList.contains('cf'))p.remove()" onerror="this.remove()">`:''}</div><table class="it"><tr><td>가격</td><td>${W(c[1])}</td></tr><tr><td>최고속력</td><td>${c[4]?c[4]+'km/h':'정보 없음'}</td></tr><tr><td>짐칸</td><td>${c[3]}칸 (창고 +${c[3]*16}개)</td></tr><tr><td>연구비</td><td>${W(carRC(x))}</td></tr><tr><td>수입 보너스</td><td>+${carPct(x)}%</td></tr><tr><td>상태</td><td>${own?'🔬 연구 완료':'🔒 연구 전'}</td></tr></table>`,
-  [...(own?[...(S.car===x&&bDur(x)<100?[['🔧 수리 '+W(fixCost(x,bDur(x))),()=>{ACT.bFix(x);save();R();ACT.carInfo(x);},bDur(x)>0?'':'pri']]:[]),['🚗 사기 '+W(c[1]),()=>carFor(x),S.money>=c[1]?'pri':'no']]:(carUnlocked(x)?[['🔬 연구 '+W(carRC(x)),()=>doBuyCar(x),S.money>=carRC(x)?'pri':'no']]:[[isCarSp(x)?'🔒':'🔒 앞 차 연구 먼저',null]])),['닫기']]);voxInit(c);return 'skip';},
+  modal(`<h2>${c[0]} <span class="tag">${c[2]}</span></h2><div class="cbig">${ic?`<span class="vico cf" style="background-image:url(${ic})"></span>`:'🚗'}${ph?`<img class="rp" src="${ph}" alt="" loading="lazy" onload="const p=this.previousElementSibling;if(p&&p.classList.contains('cf'))p.remove()" onerror="this.remove()">`:''}</div><table class="it"><tr><td>가격</td><td>${W(c[1])}</td></tr><tr><td>최고속력</td><td>${c[4]?c[4]+'km/h':'정보 없음'}</td></tr><tr><td>짐칸</td><td>${c[3]}칸 (창고 +${c[3]*16}개)</td></tr><tr><td>연구비</td><td>${W(carRC(x))} · ⏱️ ${mmss(carRT(x))}</td></tr><tr><td>수입 보너스</td><td>+${carPct(x)}%</td></tr><tr><td>상태</td><td>${own?'🔬 연구 완료':rsOf(x)?'⏳ 연구 중':'🔒 연구 전'}</td></tr></table>`,
+  [...(own?[...(S.car===x&&bDur(x)<100?[['🔧 수리 '+W(fixCost(x,bDur(x))),()=>{ACT.bFix(x);save();R();ACT.carInfo(x);},bDur(x)>0?'':'pri']]:[]),['🚗 사기 '+W(c[1]),()=>carFor(x),S.money>=c[1]?'pri':'no']]:(rsOf(x)?[['⏳ 연구 중 '+mmss(Math.max(0,rsOf(x).T-rsOf(x).t)),null]]:carUnlocked(x)?[[S.rsq?'🔬 다른 차 연구 중':'🔬 연구 '+W(carRC(x))+' · '+mmss(carRT(x)),S.rsq?null:()=>doBuyCar(x),!S.rsq&&S.money>=carRC(x)?'pri':'no']]:[[isCarSp(x)?'🔒':'🔒 앞 차 연구 먼저',null]])),['닫기']]);voxInit(c);return 'skip';},
  v3d(x){setV3d(+x===1);toast(V3D?'🚘 차를 누르면 앞쪽 45° 그림으로 봐요':'🖼️ 차를 누르면 옆모습 그림으로 봐요');},
  faUp(x){if(faSum()>=(S.fw||0)){toast('배정할 화로 알바가 없습니다. 다른 원석에서 빼거나 더 고용하세요');return;}S.fa[x]=faN(x)+1;},
  faDn(x){if(faN(x)>0)S.fa[x]--;},
@@ -2522,7 +2522,7 @@ ACT.scPrev=()=>{const own=new Set(S.wimg),L=POOLF.filter((f,k,a)=>a.indexOf(f)==
  modal(`<h2>👀 스카우트 미리보기</h2><div class="gtab">${GORD.map(g=>`<div><b style="color:${GRADE[g].c}">${g}</b><br>${SC_P[g]}%</div>`).join('')}</div><div class="pvg">${L.map(f=>`<span class="pvf ${own.has(f)?'own':''}"><img src="${wface(f)}" alt="">${own.has(f)?'<i>✓</i>':''}<b>${own.has(f)?escH(eqWN(f)):'?'}</b></span>`).join('')}</div>`,[['닫기',null,'pri']]);return 'skip';};
 ACT.eqPrev=()=>{modal(`<h2>👀 장비 미리보기</h2><div class="gtab">${EQ_G.map((g,k)=>`<div><b style="color:${EQ_C[k]}">${g}</b><br>${EQG_P[k]}%</div>`).join('')}<div><b style="color:${SET_C}">🍀</b><br>${SET_P*100}%</div></div>
  <div class="pvq">${EQO.map(([s,n])=>`<div class="pvr"><b class="pvl">${eqSl(s)[1]} ${n}</b><div class="pvc">${EQ_NM[s].map((nm,g)=>`<span style="--ec:${EQ_C[g]}"><em>${EQ_G[g]}</em><b>${nm}</b><small>⚙️ ${eqPct(EQ_B[g])}~${eqPct(EQ_B[g]+EQ_PL*EQ_S[g])}</small></span>`).join('')}</div></div>`).join('')}
- <div class="pvr"><b class="pvl" style="color:${SET_C}">🍀 세트</b><div class="pvc">${EQO.map(([s])=>`<span style="--ec:${SET_C}"><em>SET</em><b>${SET_NM[s]}</b><small>⚙️ ${eqPct(EQ_B[5])}~${eqPct(EQ_B[5]+EQ_PL*EQ_S[5])}</small></span>`).join('')}</div><div class="pvs">${[1,2,3,4].map(k=>`🍀${k} 📇 ×${SET_X[k]}`).join(' · ')}</div></div></div>`,[['닫기',null,'pri']]);return 'skip';};
+ <div class="pvr"><b class="pvl" style="color:${SET_C}">🍀 행운 세트 · 📇 명함 확률 증가</b><div class="pvc">${EQO.map(([s])=>`<span style="--ec:${SET_C}"><em>SET</em><b>${SET_NM[s]}</b><small style="color:${SET_C};font-weight:800">📇 명함 확률 ↑</small><small>⚙️ ${eqPct(EQ_B[5])}~${eqPct(EQ_B[5]+EQ_PL*EQ_S[5])}</small></span>`).join('')}</div><div class="pvs">📇 명함 확률: ${[1,2,3,4].map(k=>`${k}개 낄 때 <b style="color:${SET_C}">×${SET_X[k]}</b>`).join(' · ')}</div></div></div>`,[['닫기',null,'pri']]);return 'skip';};
 ACT.dlyGet=()=>{const o=dlyO();if(o.got){toast('오늘 보상은 이미 받았어요');return 'skip';}if(!dlyDone()){toast('📋 일일업무를 다 하면 받을 수 있어요');return 'skip';}o.got=1;$('mBg').style.display='none';S.tk=(S.tk||0)+DLY_MC;S.dlyN=(S.dlyN||0)+1;toast('📋 일일업무 완료! 📇 명함 '+DLY_MC+'장');};
 ACT.lvrBuy=x=>{const n=+x||1;if(!pay(n*LVR_C))return 'skip';S.lvR=(S.lvR||0)+n;toast('🔄 레벨 초기화권 '+n+'장을 샀어요');};
 ACT.tkBuy=x=>{if(x[0]!=='d'){toast('📇 명함은 돈으로 살 수 없어요');return 'skip';}const d=x[0]==='d',n=+x.slice(1)||1,c=(d?dCost():scoutCost())*(n===10?SC10:1);if(!pay(c))return;if(d)S.dtk=(S.dtk||0)+n;else S.tk=(S.tk||0)+n;toast((d?'🎫 D급':'⭐ 스카우트')+' 티켓 '+n+'장을 샀어요');};ACT.starAll=()=>{starAll();return 'skip';};
@@ -2821,7 +2821,7 @@ function medCell(tr){const i=trTier(tr);return `<button class="vmed ${i?'':'lk'}
 function achOpen(id){achDefs();const tr=TRK.find(t=>t.id===id);if(!tr)return;const i=trTier(tr),c=ACH_TC[Math.max(i,1)],own=(S.guide&&S.guide[tr.g])||tr.g==='top',gi=AG.find(x=>x[0]===tr.g);
  const rows=tr.L.map((t,j)=>{const ok=S.ach[t.id];return `<div class="vrow ${ok?'ok':''}"><i class="${j===4?'rb':''}" style="--c:${ACH_TC[j+1]}"></i><b>${TIER_N[j+1]}</b><span>${tD(tr,t)}</span><em>${ok?'✓':j===i?(tProg(tr,t)||'🔒'):'🔒'}</em></div>`;}).join('');
  modal(`<h2>${tr.f?'🎖️':'🏅'} ${tr.n} <span class="tag" style="color:${c}">${i?TIER_N[i]+(tr.f?' 훈장':' 메달'):'아직 없음'}</span></h2><div class="achbig ${i?'':'lk'}">${achSvg(medal(tr,i))}${i?'':'<b>🔒</b>'}</div><div class="vrows">${rows}</div>
- ${own?`<div class="vgd"><b>📖 공략</b><p>${GUIDE[tr.id]||''}</p></div>`:`<div class="vgd lk"><b>📖 어떻게 하는지 모르겠다면</b><p>상점 › 📖 공략집에서 <b>${gi[1]}</b> 공략집(${W(gi[2])})을 사면 이 분야 메달의 자세한 달성 방법이 여기에 보여요.</p><div class="row"><button class="btn mini pri" data-a="guideGo" data-x="${tr.g}">📖 공략집 보러 가기</button></div></div>`}
+ 
  ${tr.f?'<p class="sub" style="margin:8px 0 0;text-align:center">실패 훈장은 모으지 않아도 돼요.</p>':''}`,[['닫기',null,'pri']]);}
 /* 상점 › 📖 공략집 */
 const gOwn=g=>true,gSell=()=>AG.filter(g=>g[2]),gLeft=()=>gSell().filter(g=>!gOwn(g[0])),gBund=()=>Math.round(gLeft().reduce((a,g)=>a+g[2],0)*.8/1e5)*1e5;
