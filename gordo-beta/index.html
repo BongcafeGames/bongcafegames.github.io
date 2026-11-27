@@ -1027,7 +1027,7 @@ function eqUpGo(id,buy){const e=eqById(+id);if(!e||e.p>=EQ_PL)return;const p0=e.
  const tok=mTok;setTimeout(()=>{if(mTok===tok)res();else toast(ok?'🔨 강화 성공!':'💥 강화 실패…');},TRFX_MS);}
 
 function eqRoll(){let r=Math.random()*100;for(let g=5;g>0;g--){r-=EQG_P[g];if(r<0)return g;}return 0;}
-function eqNew(g,s){S.eqId=(S.eqId||0)+1;const e={id:S.eqId,s:s||EQS[Math.floor(Math.random()*EQS.length)][0],g,p:0};eqInv().push(e);return e;}
+function eqNew(g,s){S.eqId=(S.eqId||0)+1;const e={id:S.eqId,s:s||EQS[Math.floor(Math.random()*EQS.length)][0],g,p:0};if(g>=4)e.lk=1;eqInv().push(e);return e;}
 function eqOff(id){for(const f in (S.weq||{})){const o=S.weq[f];if(!o)continue;for(const s in o)if(o[s]===id)delete o[s];}}
 function eqWear(i,id){const f=S.wimg[i],e=eqById(id);if(!e||typeof f!=='number')return;eqOff(id);if(!S.weq)S.weq={};S.weq[f]=Object.assign({},eqOf(f),{[e.s]:id});}
 /* 옛 부서 장비(S.eq)는 같은 등급·강화 수치의 개인 장비로 바꿔 줌 */
@@ -3383,6 +3383,7 @@ function fm2Mig(){if(S.fm200)return;S.fm200=1;if(!S.form||typeof S.form!=='objec
   for(const m of MV){const o=S[m];if(o&&typeof o==='object'&&o[k]!==undefined){if(o[to]===undefined)o[to]=o[k];delete o[k];}}
   for(const a of ['fuA','crA'])if(Array.isArray(S[a]))S[a]=S[a].map(x=>x===k?to:x);if(S.portW===k)S.portW=to;}}
 
+try{if(!S.eqLk4){S.eqLk4=1;for(const e of eqInv())if(e.g>=4||e.set)e.lk=1;}}catch(e){}
 try{eqMig();carMig();if(!S.gift200c){S.gift200c=1;let b=0;for(const k in SHOP_OLD)if(S.gift&&S.gift[k]>0){b+=S.gift[k]*SHOP_OLD[k];delete S.gift[k];}if(b){S.money+=b;setTimeout(()=>toast('👕 없어진 옷 선물 값 '+W(b)+'을 돌려드렸어요'),8000);}}save();}catch(e){console.error(e)}
 /* 2.0.0 처음 열 때: 티켓 → 명함 안내, 기념 명함 30장, 지금 직원 레벨 1로 시작 */
 setTimeout(()=>{try{if(S.g200b)return;S.g200b=1;trMig();let msg=[];
