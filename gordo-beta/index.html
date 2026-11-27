@@ -822,7 +822,7 @@ body.nofx #gx::before,body.nofx .gxpart{animation:none;display:none}
 'use strict';
 /* ===== 판 구성 (판매용 체험판·제품키는 나중에 여기에 붙임) ===== */
 const APPVER='v2.0.0';
-const SAVEKEY='gordo-tycoon-v2';
+const SAVEKEY='gordo-tycoon-v3',SAVEKEY_OLD='gordo-tycoon-v2';
 const TICK_MAX=90; /* 한 번에 계산하는 최대 초: 절전·멈춤 뒤 몰아서 계산하지 않음 */
 
 /* ===== 자료 =====
@@ -1703,11 +1703,28 @@ function fcEnd(win){const F=FCT;FCT=null;let dead=0;const killed=[];
  modal(`<h2>🏆 ${fcN(win)} 우승!</h2><div class="swp">${F.sq[win].map(c=>`<img src="${wsrc(c)}" alt="" style="width:96px;height:96px">`).join('')}</div><p style="text-align:center;margin:10px 0 0">${fcN(win)}은 ${mmss(FC_BUF)} 동안 일 효율 <b>×${FC_X}</b>!${win===F.my?' 🎉 응원한 팀이 이겼어요!':''}</p><p class="sub" style="text-align:center;margin:6px 0 0">💀 진 팀(${killed.join(' · ')}) 선수 <b>${dead}명</b>이 쓰러졌어요. 🚑 EMS나 🩹 구급상자로 소생시켜 주세요.</p>${fcBr(F)}`,[['확인',null,'pri']]);}
 
 /* ===== 상태 ===== */
-function fresh(){return {v:2,fleet:[],dl:{},ord:[],lg:0,lgL:0,lgE:0,sites:{e1:1,c1:1},dTgt:{},dw:0,pw:0,cw:0,fst:{},scoutN:0,starN:0,tk:10,dtk:0,lvd:{},eq:{},stone:0,mcT:0,mcN:0,eqN:0,lvMs:0,total:0,inv:{},w:0,fw:0,fa:{},ws:[],wname:[],bname:'',bimg:'',wimg:[],wfat:[],wrest:[],wforce:[],wburn:[],wshift:[],wcarOwn:[],wloy:[],gift:{},wcarDur:[],wcarDead:[],cdur:{},shift3:1,sh4:1,shiftCur:0,shiftT:0,ms:[],sw:0,wrole:[],co:1,mgr:{on:0,dir:'all',log:[],t:0,keep:0,fix:1,gift:1,ct:0},got:{},hist:[],gear:0,pick:0,cap:0,payT:0,strike:0,wages:0,autoU:0,auto:{},lock:{},fever:0,fevers:0,ev:{k:'',t:0},evN:{cop:0,mob:0},
+function fresh(){return {v:3,fleet:[],dl:{},ord:[],lg:0,lgL:0,lgE:0,sites:{e1:1,c1:1},dTgt:{},dw:0,pw:0,cw:0,fst:{},scoutN:0,starN:0,tk:10,dtk:0,lvd:{},eq:{},stone:0,mcT:0,mcN:0,eqN:0,lvMs:0,total:0,inv:{},w:0,fw:0,fa:{},ws:[],wname:[],bname:'',bimg:'',wimg:[],wfat:[],wrest:[],wforce:[],wburn:[],wshift:[],wcarOwn:[],wloy:[],gift:{},wcarDur:[],wcarDead:[],cdur:{},shift3:1,sh4:1,shiftCur:0,shiftT:0,ms:[],sw:0,wrole:[],co:1,mgr:{on:0,dir:'all',log:[],t:0,keep:0,fix:1,gift:1,ct:0},got:{},hist:[],gear:0,pick:0,cap:0,payT:0,strike:0,wages:0,autoU:0,auto:{},lock:{},fever:0,fevers:0,ev:{k:'',t:0},evN:{cop:0,mob:0},
  fur:{lv:0,on:{iron:1,sulfur:1,copper:1,gold:1,dia:1,sapph:1,aqua:1},b:0,bk:[]},furN:1,fo:[],sa:{},scat:{},scSel:'proc',swK:0,fwK:0,ov:0,ovR:0,ovCd:0,rares:0,cr:{u:0,lv:0,on:{},p:{},made:{},slots:[]},
  bm:1,ach:{},cars:[],car:-1,wcar:{want:0,t:0},carBad:0,tab:'work',last:Date.now(),seen:0,money:START_MONEY};}
 let S=fresh();
-function load(){try{const t=localStorage.getItem(SAVEKEY);if(t)merge(JSON.parse(t));}catch(e){}}
+/* 1.7 성장도(%) = 회사 25 + 직원 등급 25 + 차 수집 15 + 업적 35. 1.7 세이브 칸(co·ws·cars·ach)만 씀. 1.7.6과 2.0.0이 같은 식 */
+const G17_ID=new Set('m2,m3,m4,m5,m6,c3,c5,c7,c9,c10,wg1,wg2,wg3,wg4,wg5,mg,mg2,mg3,mg4,mg5,w1,w8,w16,w24,w32,wa,ws,wsp,wss,wsx,vac1,vac5,vac20,vac50,vac100,rc1,rc5,rc10,rc30,rc60,sc1,sc10,sc100,sc300,sc1k,fc5,fc10,fc20,fc30,fcAll,st1,st10,st30,st100,st150,st5,s5x5,s5x10,s5x20,s5x38,du1,du3,du10,du30,du100,ov1,ov5,ov20,ov50,ov100,se1,se10,se50,se150,se300,wk1,wk3,wk10,wk30,wk60,sp1,sp3,sp5,sp8,sp10,ce1,ce3,ce5,ce10,ce20,fu2,fu3,fu4,fu6,fu8,rw1,rw2,rw3,rw4,rw5,aq,aq100,aq1k,aq10k,aq100k,r1,r10,r100,r1k,r10k,fv1,fv10,fv50,fv200,fv500,mob1,mob,mob50,mob200,mob500,cr1,ct1k,ct10k,ct100k,ct1m,ck1,ck2,ck3,ck4,ck5,cx_ecu1,cx_ecu2,cx_ecu3,cx_ecu4,cx_ecu5,cx_det1,cx_det2,cx_det3,cx_det4,cx_det5,cx_crow1,cx_crow2,cx_crow3,cx_crow4,cx_crow5,cx_drill1,cx_drill2,cx_drill3,cx_drill4,cx_drill5,cx_ammo1,cx_ammo2,am,cx_ammo4,cx_ammo5,k1,k5,k10,k25,k46,wc1,wc4,wc8,wc16,wc32,dv1,dv10,dv100,dv500,dv1k,fm1,fm10,fm100,fm300,fm1k,out1,out5,out20,out50,out100,fl1,fl2,fl4,fl6,lg2,lg3,lg4,mp1,mp10,mp50,mp100,mp300,p1,p10,p50,p100,p300,bt,bt10,bt50,bt100,bt300,ml1,ml10,ml50,ml100,ml300,bf,bf5,bf20,bf50,bf100,tf1,tf10,tf50,tf200,tf500,cp1,cp5,cp30,cp100,cp300,cb1,cb3,cb10,cb30,cb100,ad1,ad3,ad5,ad10,ad20,mm1,mm5,mm10,mm30,mm100,dn1,dn3,dn5,dn10,dn30,dl1,dl3,dl10,dl30,dl100,em1,em3,em10,em30,em100,bn1,bn3,bn10,bn30,bn100,ma1,ma2,ma3,ma4,ma5'.split(',')),G17_G=['S+','S','A+','A','B+','B','C+','C','D+','D'],G17_STAFF=26,G17_CARS=46;
+function grow17(o){if(!o||typeof o!=='object')return 0;const cl=v=>Math.max(0,Math.min(1,v||0)),ws=Array.isArray(o.ws)?o.ws:[];
+ const co=cl(((+o.co||1)-1)/9),st=cl(ws.reduce((a,g)=>{const k=G17_G.indexOf(g);return a+(k<0?0:(10-k)/10);},0)/G17_STAFF),car=cl(new Set(Array.isArray(o.cars)?o.cars:[]).size/G17_CARS),ach=cl(Object.keys(o.ach||{}).filter(k=>G17_ID.has(k)).length/G17_ID.size);
+ return Math.floor(100*(.25*co+.25*st+.15*car+.35*ach));}
+
+/* 2.0.0 세이브인지: v3 이상이거나 2.0.0 베타에만 있는 칸이 있으면 */
+function isOld(o){return !(o&&(o.v>=3||o.lvd||o.gm||o.bq));}
+var NEWG=false;
+function load(){let t=null;try{t=localStorage.getItem(SAVEKEY);if(!t){const o=localStorage.getItem(SAVEKEY_OLD);if(o&&!isOld(JSON.parse(o)))t=o;}}catch(e){t=null;}NEWG=!t;try{if(t){merge(JSON.parse(t));S.v=3;}}catch(e){}}
+const LG_R=n=>{const r={money:n?5e6*n*n:1e6,tk:3+2*n};if(n){r.stone=2*n;r.spB=n;r.spR=n;}if(n>=9)r.lgAq=n-8;return r;};
+function lgHash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h*33)^s.charCodeAt(i))>>>0;return h.toString(36);}
+function legacyAsk(o){if(S.legacy){toast('📮 이미 받았어요');return;}const p=grow17(o),n=Math.floor(p/10);
+ modal(`<h2>📈 1.7 성장도</h2><div style="text-align:center;font-size:46px;font-weight:900;margin:6px 0">${p}%</div><div style="text-align:center;margin:0 0 6px"><b>${n*10}%</b> 보상</div><div class="sub" style="text-align:center">${mailRw({r:LG_R(n)})}</div>`,[['취소'],['📮 받기',()=>legacyTake(o),'pri']]);}
+function legacyTake(o){if(S.legacy){toast('📮 이미 받았어요');return;}const p=grow17(o),n=Math.floor(p/10),h=lgHash(JSON.stringify(o));if(!Array.isArray(S.mailIn))S.mailIn=[];
+ S.mailIn.push({id:'legacy-'+h,to:'all',t:'📈 1.7 성장도 '+(n*10)+'% 보상',b:'',r:LG_R(n)});S.legacy={h,p,n,at:Date.now()};save();R();setTimeout(mailBox,50);}
+function legacyPick(){const i=document.createElement('input');i.type='file';i.accept='.gordo,.gordo2,.json,.txt';i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const o=parseSave(String(r.result||''));if(!o){toast('고르도 광산 세이브가 아니에요');return;}if(!isOld(o)){if(loadSave(o))$('mBg').style.display='none';return;}legacyAsk(o);};r.readAsText(f);};i.click();}
+function startAsk(tut){modal(`<h2>⛏️ 고르도 광산 2.0</h2>`,[['📂 1.7 세이브',()=>legacyPick()],['▶ 새로 시작',()=>{if(tut)tutStart();},'pri']]);}
 function merge(o){const f=fresh();(function mg(a,b){for(const k in b){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==='object')mg(a[k],b[k]);else a[k]=b[k];}})(f,o);S=f;if(o&&o.cr&&o.cr.made)S.cr.made=o.cr.made;if(S.cr.u&&!S.cr.slots.length){const on=Object.keys(RECIPE).filter(k=>S.cr.on&&S.cr.on[k]);S.cr.slots=(on.length?on:['ecu']).map(k=>({k,p:0}));}if(S.w>0&&!S.ws.length)S.ws=Array(S.w).fill('D');S.w=0;wSync();if(!S.shift3){S.shift3=1;distributeShifts();}if(S.mgr.on&&!S.ms.length)S.ms=[S.mgr.dir||'all'];S.mgr.on=0;S.ms=S.ms.map(d=>DIRS[d]?d:'off');wFaceFix();if(!(o&&o.sh4)){S.sh4=1;distributeShifts();S.shiftCur=(S.shiftCur||0)%NSH;}{const c=Array(NSH).fill(0);for(let i=0;i<S.ws.length;i++){const v=S.wshift[i];if(v>=0&&v<NSH){if(c[v]>=SH_CAP)S.wshift[i]=-1;else c[v]++;}else if(v>=NSH)S.wshift[i]=-1;}}sfSync(o);if(!(o&&o.furN)){S.furN=Math.max(1,Math.min(furMax(),S.fw||1));const L=[];for(const x of FUR_ORDER)for(let k=0;k<((o&&o.fa&&o.fa[x])||0);k++)L.push(x);S.fo=L.slice(0,S.furN);}foFix();if(!(o&&o.scat)){S.scat={};const want=o&&o.sa;if(want)saAdd(99,want);S.swK=want?0:0;}if(!S.rlk){S.rlk=1;if(S.lock)for(const k in S.lock)if(k.startsWith('R_'))S.lock[k]=0;}sfCount();}
 function save(){S.last=Date.now();try{localStorage.setItem(SAVEKEY,JSON.stringify(S));}catch(e){}}
 
@@ -3259,17 +3276,17 @@ let FXON=true;try{FXON=localStorage.getItem('gordo-tycoon-fx')!=='0';}catch(e){}
 const RFX_K='gordo-tycoon-rarefx-all',rfxAll=()=>{try{return localStorage.getItem(RFX_K)==='1';}catch(e){return false;}};
 function setFx(v){FXON=!!v;document.body.classList.toggle('nofx',!FXON);try{localStorage.setItem('gordo-tycoon-fx',FXON?'1':'0');}catch(e){}}
 /* 1.4.0 세이브 파일: 확장자 .gordo (안은 JSON). 옛 방식(복사한 글자, .txt/.json)도 그대로 불러옴 */
-const SAVE_EXT='.gordo',SAVE_APP='gordo-mine-tycoon';
+const SAVE_EXT='.gordo2',SAVE_APP='gordo-mine-tycoon',SAVE_APP2='gordo-mine-tycoon-2';
 const saveTxt=()=>btoa(unescape(encodeURIComponent(JSON.stringify(S))));
 function exportFile(){try{save();const d=new Date(),p=n=>String(n).padStart(2,'0'),nm=`gordo_save_${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${SAVE_EXT}`;
- const blob=new Blob([JSON.stringify({app:SAVE_APP,ver:APPVER,at:Date.now(),save:S})],{type:'application/octet-stream'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);toast('💾 '+nm+' 파일로 내보냈어요');}catch(e){toast('파일로 내보내지 못했어요. 글자 복사를 써 주세요');}}
+ const blob=new Blob([JSON.stringify({app:SAVE_APP2,fmt:3,ver:APPVER,pid:pidOf(),at:Date.now(),save:S})],{type:'application/octet-stream'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);toast('💾 '+nm+' 파일로 내보냈어요');}catch(e){toast('파일로 내보내지 못했어요. 글자 복사를 써 주세요');}}
 function exportSave(){save();modal(`<h2>💾 저장 내보내기</h2><p class="sub">세이브를 <b>${SAVE_EXT}</b> 파일로 받아 두면 다른 기기나 브라우저에서 ≡ 메뉴 > 세이브 > 저장 불러오기로 이어서 할 수 있어요.</p><div class="row"><button class="btn pri" onclick="exportFile()">📁 ${SAVE_EXT} 파일로 받기</button></div><div class="sec">또는 글자로 복사</div><textarea readonly onclick="this.select()">${saveTxt()}</textarea>`,[['닫기',null,'pri']]);}
 function parseSave(t){t=(t||'').replace(/^﻿/,'').trim();if(!t)return null;let o=null;
- if(t[0]==='{'){try{o=JSON.parse(t);}catch(e){return null;}if(o&&o.app===SAVE_APP&&o.save&&typeof o.save==='object')return o.save;return (o&&typeof o.money==='number')?o:null;}
+ if(t[0]==='{'){try{o=JSON.parse(t);}catch(e){return null;}if(o&&(o.app===SAVE_APP||o.app===SAVE_APP2)&&o.save&&typeof o.save==='object')return o.save;return (o&&typeof o.money==='number')?o:null;}
  try{o=JSON.parse(decodeURIComponent(escape(atob(t.replace(/\s+/g,'')))));}catch(e){return null;}return (o&&typeof o==='object'&&typeof o.money==='number')?o:null;}
-function loadSave(o){if(!o){toast('고르도 광산 세이브가 아니에요');return false;}try{merge(o);S.last=Date.now();save();R();toast('📂 불러왔습니다');return true;}catch(e){toast('불러오지 못했어요');return false;}}
+function loadSave(o){if(!o){toast('고르도 광산 세이브가 아니에요');return false;}if(isOld(o)){legacyAsk(o);return false;}try{merge(o);S.last=Date.now();save();R();toast('📂 불러왔습니다');return true;}catch(e){toast('불러오지 못했어요');return false;}}
 function importFile(f){if(!f)return;const r=new FileReader();r.onload=()=>{if(loadSave(parseSave(String(r.result||''))))$('mBg').style.display='none';};r.onerror=()=>toast('파일을 읽지 못했어요');r.readAsText(f);}
-function importSave(){modal(`<h2>📂 저장 불러오기</h2><p class="sub">내보낸 <b>${SAVE_EXT}</b> 파일을 고르세요. 예전에 받은 .json·.txt 파일이나 복사해 둔 글자도 불러올 수 있어요. 지금 진행 상황은 덮어씁니다.</p><input id="impF" type="file" accept="${SAVE_EXT},.json,.txt,application/json,text/plain" style="display:none" onchange="importFile(this.files&&this.files[0])"><div class="row"><button class="btn pri" onclick="$('impF').click()">📁 파일 고르기</button></div><div class="sec">또는 글자 붙여 넣기</div><textarea id="impT"></textarea>`,[['취소'],['글자로 불러오기',()=>{loadSave(parseSave($('impT').value));},'pri']]);}
+function importSave(){modal(`<h2>📂 저장 불러오기</h2><p class="sub">내보낸 <b>${SAVE_EXT}</b> 파일을 고르세요. 예전에 받은 .json·.txt 파일이나 복사해 둔 글자도 불러올 수 있어요. 지금 진행 상황은 덮어씁니다.</p><input id="impF" type="file" accept="${SAVE_EXT},.gordo,.json,.txt,application/json,text/plain" style="display:none" onchange="importFile(this.files&&this.files[0])"><div class="row"><button class="btn pri" onclick="$('impF').click()">📁 파일 고르기</button></div><div class="sec">또는 글자 붙여 넣기</div><textarea id="impT"></textarea>`,[['취소'],['글자로 불러오기',()=>{loadSave(parseSave($('impT').value));},'pri']]);}
 
 /* ===== 시작 ===== */
 $('ver').textContent=APPVER;try{if(isAdm())admOn();else if(S.admBak)admOff();}catch(e){}
@@ -3373,7 +3390,7 @@ setTimeout(()=>{try{if(S.g200)return;S.g200=1;S.mcCo=S.co||1;for(const f of S.wi
 if(!S.cg174){S.cg174=1;S.ceil=(S.ceil||0)+100;try{save();}catch(e){}setTimeout(()=>{try{toast('🎯 천장 첫 도입 기념! 선택권 1장을 드렸어요 · 상점 › 직원 스카우트');}catch(e){}},4000);}
 /* 켜 둔 동안에만 진행: 꺼 둔 시간은 계산하지 않음 */
 S.fever=0;S.ev={k:'',t:0};if(!S.seen)S.seen=1;if(S.wcar&&S.wcar.want&&!(S.wcar.who||[]).length){S.wcar.want=0;S.wcar.t=0;}
-{let a=false;try{a=!localStorage.getItem(TUT_KEY);}catch(e){}if(a){$('mBg').style.display='none';tutStart();}patchChk(a);}
+{let a=false;try{a=!localStorage.getItem(TUT_KEY);}catch(e){}if(NEWG){$('mBg').style.display='none';startAsk(a);}else if(a){$('mBg').style.display='none';tutStart();}patchChk(a);}
 setFx(FXON);
 aqSeen=Math.floor(S.got.aqua||0);
 let tAch=0;let tMgrR=0,tU=0;
