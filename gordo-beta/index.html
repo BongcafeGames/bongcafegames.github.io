@@ -964,7 +964,7 @@ const CR_MAX=12;
 const TR_N=['채광','구매','가공','운전','손기술','눈치'],TR_IC=['⛏️','🛒','🔥','🚗','🛠️','👀'];
 const ROLE_TR={g:[5,1],m:[0,3],b:[0,5],p:[1,5],f:[2,4],c:[4,2],d:[3,1],s:[5,1]};
 const LV_MAX=50,TR_MAX=110,TR_MIN=30,LV_MS=10,LV_MC=2,XP_OFF=.5;
-const lvNeed=n=>Math.round(7.6*Math.pow(n,2.15));          /* Lv1→2 8초 … Lv49→50 약 3.1시간. 쉬지 않고 일하면 Lv10 ≈ 1시간, Lv30 ≈ 30시간, Lv50 ≈ 150시간 */
+const lvNeed=n=>Math.round(13*Math.pow(n,1.5));/* 켜 둔 시간 Lv10 0.6h·Lv30 11h·Lv50 40h */          /* Lv1→2 8초 … Lv49→50 약 3.1시간. 쉬지 않고 일하면 Lv10 ≈ 1시간, Lv30 ≈ 30시간, Lv50 ≈ 150시간 */
 const trLbl=(f,k)=>(f===46&&k===4)?'리더쉽':TR_N[k];           /* 월현 카드는 손기술 자리를 '리더쉽'으로 받음(효과는 손기술과 같음) */
 function trMig(){if(S.trV2)return;S.trV2=1;for(const f in (S.lvd||{})){const o=S.lvd[f];if(o&&Array.isArray(o.t)&&!o.v){o.v=2;o.t=o.t.map(v=>Math.min(TR_MAX,(v|0)+TR_MIN));}}}
 function lvO(f){if(!S.lvd)S.lvd={};let o=S.lvd[f];if(!o||!Array.isArray(o.t)){const j=S.wimg.indexOf(f),g=j>=0?S.ws[j]:'D',b=Math.max(0,GORD.length-1-GORD.indexOf(g));o=S.lvd[f]={v:3,l:1,x:0,g:[0,0,0,0,0,0],t:TR_N.map(()=>TR_MIN+b+Math.floor(Math.random()*4))};}return o;}
