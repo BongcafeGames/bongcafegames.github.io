@@ -2680,8 +2680,7 @@ ACT.ceilGet=x=>{const f=+x;if((S.ceil||0)<CEIL||!POOLF.includes(f))return 'skip'
 function gmSet(){if(!S.gm)S.gm={city:1,loy:60,tr:0,log:[]};MFN=[];const B=(on,t,fn)=>{MFN.push(fn);return `<button class="btn mini ${on?'on':''}" onclick="mGo(${MFN.length-1})">${t}</button>`;},re=()=>{save();R();gmSet();};const i=gmI();
  modal(`<h2>🗂️ 총무에게 맡길 일</h2><p class="sub" style="margin:0 0 8px">${i>=0?'<b>'+escH(wNm(i)||S.ws[i]+'등급 직원')+'</b>이(가) 총무예요.':'총무가 없어요.'}</p>
  <div class="gmak">${GM_AK.map(([k,n])=>`<div class="gmr"><b>${n}</b>${B(S.gm[k],S.gm[k]?'ON':'OFF',()=>{S.gm[k]=S.gm[k]?0:1;re();})}</div>`).join('')}<div class="gmr"><b>🍔 충성도</b><input id="gmLoy" type="number" min="0" max="100" step="5" value="${S.gm.loy||0}" style="width:70px;font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--tileB);background:#0f1214;color:inherit;text-align:right" onchange="S.gm.loy=Math.max(0,Math.min(100,Math.round(+this.value||0)));save();R();gmSet();"></div></div>
- <div class="sub" style="margin:6px 0 0">💰 총무 월급 ×${trim(gmWX().toFixed(1))}</div>
- <div class="sec">최근에 한 일</div><div class="mlog" style="margin-top:0">${(S.gm.log||[]).join('<br>')||'아직 없어요'}</div>`,[['닫기',null,'pri']]);}
+ <div class="sub" style="margin:6px 0 0">💰 총무 월급 ×${trim(gmWX().toFixed(1))}</div>`,[['닫기',null,'pri']]);}
 ACT.revive=x=>{revDo(x);};ACT.reviveAll=()=>{revAll();};ACT.fixNow=x=>{fixNow(x);};
 ACT.rideCar=x=>{x=+x;if(!S.cars.includes(x))return 'skip';if(S.car===x){ACT.carInfo(x);return 'skip';}S.car=x;toast('🚗 이제 '+CARS[x][0]+'을(를) 타요');};
 ACT.stoneBuy=x=>{const n=+x||1;if(!pay(n*STONE_C))return 'skip';S.stone=(S.stone||0)+n;toast('💎 강화석 '+F(n)+'개를 샀어요');};
