@@ -779,6 +779,8 @@ body.nofx #gx::before,body.nofx .gxpart{animation:none;display:none}
 @keyframes gxcf{to{top:106%;transform:rotate(calc(var(--r) + 540deg))}}
 @keyframes gxnIn{from{opacity:0}to{opacity:1}}@keyframes gxnOut{to{opacity:0;transform:scale(1.08)}}
 @keyframes gxnPop{0%{transform:scale(.15) rotate(-14deg);opacity:0}100%{transform:none;opacity:1}}@keyframes gxnTxt{0%{transform:scale(2.6);opacity:0}100%{transform:none;opacity:1}}@keyframes gxnPulse{50%{transform:scale(1.14);opacity:.8}}
+.corq{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.corq span{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:var(--tile);border:1px solid rgba(255,255,255,.12);font-size:13px}.corq span.ok{border-color:#4fd17a;background:color-mix(in srgb,#4fd17a 16%,var(--tile))}.corq b{color:#ffd84a}
+.pcc.own{box-shadow:inset 0 0 0 2px var(--gold)}
 .dly{display:flex;flex-direction:column;gap:4px;margin-top:8px}.dly>div{display:flex;align-items:center;gap:8px;background:var(--tile);border:1px solid var(--tileB);border-radius:8px;padding:6px 9px}.dly>div b{flex:1;font-size:13px}.dly>div small{color:var(--dim);font-size:12px}.dly>div.ok{border-color:#3fd99a}.dly>div.ok small{color:#3fd99a}
 .eqgr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.eqgr>div{border:1.5px solid var(--ec);border-radius:8px;padding:6px 2px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}.eqgr i{font-style:normal;font-size:24px}.eqgr b{font-size:15px}.eqgr small{font-size:10px;color:var(--dim);line-height:1.2}@media (max-width:520px){.eqgr{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
@@ -820,10 +822,10 @@ const ITEM={
  diP:{n:'세공 다이아몬드',e:'💍',npc:6000},saP:{n:'세공 사파이어',e:'🩷',npc:15000},aqP:{n:'세공 아쿠아마린',e:'🧿',npc:100000},
  /* 1.7.0 재료: 광산·제작소에서 안 나옴. 데이비스 환경미화에 주문하거나 직접 환경미화. 못 팖 */
  plast:{n:'플라스틱',e:'🫧',raw:1},alum:{n:'알루미늄',e:'⚪',raw:1},wood:{n:'나무',e:'🪵',raw:1},char:{n:'숯',e:'⚫',raw:1}};
-const DROPS=[['coal',.35],['iron',.27],['sulfur',.10],['copper',.15],['gold',.055],['dia',.05],['sapph',.02],['aqua',.005]];
+const DROPS=[['coal',.20],['iron',.34],['sulfur',.10],['copper',.19],['gold',.07],['dia',.065],['sapph',.025],['aqua',.01]];
 const ORES=DROPS.map(d=>d[0]);
 /* 석탄은 나올 때 2개(50%) 또는 3개(50%) */
-const COAL_AVG=.65/.35;
+const COAL_AVG=(1-DROPS[0][1])/DROPS[0][1];
 /* 가공: 광석 1 + 석탄 1 → 제품 1. 아주 낮은 확률(RARE_P)로 최상급 제품이 나오고 RARE_X배에 팔림 */
 const PROD={iron:'feI',sulfur:'suP',copper:'cuI',gold:'auI',dia:'diP',sapph:'saP',aqua:'aqP'};
 const RARE_P=.001, RARE_X=50;
@@ -1058,7 +1060,7 @@ function saAdd(n,want){if(!S.scat)S.scat={};if(!S.scOff||typeof S.scOff!=='objec
 /* 화로: 산 화로 개수 = 주조팀 정원. 화로마다 구울 원석을 정하고 주조팀 직원이 한 명씩 붙음 */
 const furMax=()=>fCapL(S.co);
 /* 2.0.0p 밸런스 표(회사 레벨 L에서 업그레이드를 L단계까지 했을 때 채광=화로=제작+판매, 배송=제작 재료가 되게 맞춘 값). 인덱스 = 업그레이드 단계−1(판매는 회사 레벨−1) */
-let FUR_K=[0.485,1.27,1.67,2.77,3.87,4.25,4.56,4.9,5.25,6.3],SELL_K=[0.0175,0.0374,0.0374,0.0752,0.0954,0.134,0.171,0.199,0.242,0.29],CR_K=[0.364,1.03,1.1,2.61,3.63,4.78,6.1,9.03,13.3,20.3],DLV_K=[0.54,0.675,0.9,1.42,1.95,4.5,5.4,9.6,14.9,22.2];
+let FUR_K=[0.596,1.56,2.06,3.42,4.77,5.24,5.61,6.03,6.46,7.76],SELL_K=[0.0214,0.045,0.045,0.0912,0.116,0.163,0.208,0.241,0.294,0.352],CR_K=[0.458,1.31,1.4,3.33,4.62,6.09,7.77,11.5,16.9,25.9],DLV_K=[0.686,0.857,1.14,1.81,2.48,5.71,6.86,12.2,18.9,28.2];
 const sellK=()=>SELL_K[Math.min(Math.max(0,(S.co||1)-1),SELL_K.length-1)],dlvK=()=>DLV_K[Math.min(S.lgL||0,DLV_K.length-1)];
 const foAlt=tr=>{if(have('coal')<1)return null;let b=null,bv=1;for(const x in PROD)if(!tr.includes(x)&&have(x)>=bv&&cap()-have(PROD[x])>=1){b=x;bv=have(x);}return b;};
 const upMax=()=>Math.max(0,(S.co||1)-1),slotMax=()=>Math.min(CR_MAX,S.co||1);
@@ -1085,7 +1087,10 @@ const RAWP={coal:100,iron:6200,copper:2800,gold:7600,sulfur:1200,wood:200},RAW_C
 const rawCost=k=>{const r=RECIPE[k];if(!r)return 0;let c=r.buy.reduce((a,b)=>a+b[1]*b[2],0);for(const [it,q] of Object.entries(r.m)){const o=Object.keys(PROD).find(x=>PROD[x]===it);c+=q*(RECIPE[it]?rawCost(it):o&&RAWP[o]!=null?RAWP[o]+RAWP.coal:RAWP[it]!=null&&!PROD[it]?RAWP[it]:(typeof PX!=='undefined'&&PX[it])||(ITEM[it].npc||0));}return c/(r.out||1);};
 const CO_R=[0,2,5,10,20,40,80,150,300,600];/* Lv.n → n+1 에 필요한 🌟 최상급 자재(최상급 제품 아무거나) */
 const coNeed=l=>CO_R[l]||0, rHave=()=>RARES.reduce((a,k)=>a+Math.floor(have(k)),0);
-function coPay(){const n=coNeed(S.co);if(rHave()<n){toast('🌟 최상급 자재가 '+(n-rHave())+'개 모자라요. 화로에서 아주 드물게 나와요');return false;}let left=n;for(const k of RARES.slice().sort((a,b)=>ITEM[a].npc-ITEM[b].npc)){const u=Math.min(left,Math.floor(have(k)));if(u>0){S.inv[k]-=u;left-=u;}if(!left)break;}return true;}
+const coReq=l=>{const D=DROPS.filter(d=>PROD[d[0]]),s=D.reduce((a,d)=>a+d[1],0),N=coNeed(l),q=D.map(d=>{const v=N*d[1]/s;return ['R_'+PROD[d[0]],Math.floor(v),v%1];});let left=N-q.reduce((a,x)=>a+x[1],0);q.slice().sort((a,b)=>b[2]-a[2]).forEach(x=>{if(left>0){x[1]++;left--;}});const o={};for(const [k,n] of q)if(n>0)o[k]=n;return o;};
+const rOK=l=>Object.entries(coReq(l)).every(([k,n])=>Math.floor(have(k))>=n);
+const coReqH=l=>`<div class="corq">${Object.entries(coReq(l)).map(([k,n])=>{const h=Math.floor(have(k));return `<span class="${h>=n?'ok':''}" title="${ITEM[k].n}">${ITEM[k.slice(2)].e}<b>${F(Math.min(h,n))}</b>/${n}</span>`;}).join('')}</div>`;
+function coPay(){const q=coReq(S.co);const miss=Object.entries(q).filter(([k,n])=>Math.floor(have(k))<n);if(miss.length){toast('🌟 모자라요: '+miss.map(([k,n])=>ITEM[k].n+' '+(n-Math.floor(have(k)))+'개').join(', '));return false;}for(const k in q)S.inv[k]-=q[k];return true;}
 const coArt=()=>{const im=IMG['_회사_'+(S.co||1)];return im?`<div class="coart"><img src="${im}" alt="고르도 광산 Lv.${S.co}"><b>Lv.${S.co}</b></div>`:'';};
 const CO_MAX=10, MGR_WAGE0=5000, MGR_COST=500000, FAIL0=.2;
 /* 이벤트: 게임을 켜 둔 동안 매초 EV_P 확률. 제작품 가격에 x배. 겹치지 않음 */
@@ -1766,10 +1771,11 @@ function thrTry(){const o=bossI();if(o<0||FG||$('mBg').style.display==='flex')re
  if(!L.length||Math.random()>=THR_P)return;thrAsk(L[Math.floor(Math.random()*L.length)]);}
 function thrAsk(i){const o=bossI();if(o<0||!S.ws[i]||isBoss(i))return;S.thrN=(S.thrN||0)+1;
  modal(`<h2>👑 왕좌 쟁탈전!</h2><div style="text-align:center"><img src="${fsrc(i)}" alt="" style="width:130px;height:130px;object-fit:cover;border-radius:14px;box-shadow:0 0 0 3px ${GRADE[S.ws[i]].c},0 0 20px ${GRADE[S.ws[i]].c}"><div style="margin-top:6px;font-weight:800">${escH(fnm(i))}</div></div><div class="say">“${THR_SAY[Math.floor(Math.random()*THR_SAY.length)]}”</div>`,[['🛡️ 방어전',()=>thrDefend(i),'pri']]);}
+const bswap=(i,o)=>{bcars();S.wcarOwn[i]=-1;S.wcarDur[i]=100;S.wcarDead[i]=0;if(o>=0){S.wcarOwn[o]=-1;S.wcarDur[o]=100;S.wcarDead[o]=0;}};
 function thrDefend(i){const o=bossI();if(o<0||!S.ws[i]||isBoss(i))return;$('mBg').style.display='none';
  const crowd=S.ws.map((g,j)=>j).filter(j=>j!==i&&j!==o).sort(()=>Math.random()-.5);
  fightStart({a:o,b:i,title:'왕좌 방어전',d:.6,crowd,onEnd:w=>{
-  if(!w&&S.ws[i]&&S.ws[o]){const r=S.wrole[i],sh=S.wshift[i];S.wrole[i]='b';S.wshift[i]=SFSH;S.wrest[i]=0;S.wforce[i]=0;S.wrole[o]=r;S.wshift[o]=r==='m'?sh:SFSH;sfCount();S.thrL=(S.thrL||0)+1;bossWinFx(i,o);}
+  if(!w&&S.ws[i]&&S.ws[o]){bswap(i,o);const r=S.wrole[i],sh=S.wshift[i];S.wrole[i]='b';S.wshift[i]=SFSH;S.wrest[i]=0;S.wforce[i]=0;S.wrole[o]=r;S.wshift[o]=r==='m'?sh:SFSH;sfCount();S.thrL=(S.thrL||0)+1;bossWinFx(i,o);}
   else{S.thrW=(S.thrW||0)+1;toast('🛡️ '+fnm(o)+'이(가) 사장 자리를 지켰어요');}
   save();R();}});}
 function wPark(){if(!S.wPark)S.wPark={};for(let i=0;i<S.ws.length;i++){const f=S.wimg[i];if(isBoss(i)){if(S.wcarOwn[i]>=0){S.wPark[f]={k:S.wcarOwn[i],d:S.wcarDur[i]??100};S.wcarOwn[i]=-1;S.wcarDur[i]=100;S.wcarDead[i]=0;}}else if(S.wPark[f]&&!(S.wcarOwn[i]>=0)){const p=S.wPark[f];S.wcarOwn[i]=p.k;S.wcarDur[i]=p.d;S.wcarDead[i]=0;delete S.wPark[f];}}}
@@ -1938,7 +1944,7 @@ const VIEW={
   return `<div class="card"><div class="bosscard" data-a="boss"><img src="${bossSrc()}" alt=""><div><h3 style="margin:0">👑 ${escH(bTitle())}</h3><div class="sub">${car()?'🚗 '+car()[0]+' 타는 중 · 내구도 '+Math.ceil(bDur())+(bDur()>0?'':' (고장!)'):'아직 차가 없습니다'} · 차 ${S.cars.length}대 · 직원 ${nW()}명</div></div></div></div>
   ${coArt()}<div class="card"><h3>🏢 고르도 광산 <span class="tag g">Lv.${S.co}</span>${nx?'':' <span class="tag">최고 레벨</span>'}</h3>
    <div class="sub">채굴 알바 최대 <b>${wCapL(S.co)}명</b> · 판매 직원 최대 <b>${sMax()}명</b> · 주조 직원 최대 <b>${fMax()}명</b> · 창고 <b>${F(capBase())}개</b> · 알바 채굴 실패 <b>${Math.round(failP()*100)}%</b> · 👑 사장 채굴 <b>×${bossX()}</b></div>
-   ${nx?`<div class="sub" style="margin-top:4px">Lv.${S.co+1}이 되면: <span class="good">채굴 알바 최대 ${wCapL(S.co+1)}명 · 판매 직원 ${sCapL(S.co+1)}명 · 주조 직원 ${fCapL(S.co+1)}명 · 창고 ${F(capBase(S.co+1))}개 · 사장 채굴 ×${S.co+2} · 실패 ${Math.round(Math.max(.1,FAIL0-.01*S.co)*100)}%</span></div><div class="sub" style="margin-top:4px">🌟 <b>${F(rHave())}</b> / ${coNeed(S.co)}</div><div class="row"><button class="btn pri ${rHave()<coNeed(S.co)?'no':''}" data-a="upCo">🏢 회사 승급 (Lv.${S.co+1})<small>🌟 최상급 자재 ${coNeed(S.co)}개</small></button></div>`:''}
+   ${nx?`<div class="sub" style="margin-top:4px">Lv.${S.co+1}이 되면: <span class="good">채굴 알바 최대 ${wCapL(S.co+1)}명 · 판매 직원 ${sCapL(S.co+1)}명 · 주조 직원 ${fCapL(S.co+1)}명 · 창고 ${F(capBase(S.co+1))}개 · 사장 채굴 ×${S.co+2} · 실패 ${Math.round(Math.max(.1,FAIL0-.01*S.co)*100)}%</span></div>${coReqH(S.co)}<div class="row"><button class="btn pri ${rOK(S.co)?'':'no'}" data-a="upCo">🏢 회사 승급 (Lv.${S.co+1})<small>🌟 최상급 자재 ${coNeed(S.co)}개</small></button></div>`:''}
    <div class="sec">🔧 강화 <small class="secs">그림을 누르면 올릴 수 있어요</small></div><div class="upg">${['gear','fur','crLv'].map(upTile).join('')}</div></div>
 `;},
  raw(){const fv=S.fever>0;
@@ -2264,7 +2270,7 @@ function bossAsk(i){i=+i;if(!S.ws[i])return;if(isBoss(i))return;if(isVac(i)){toa
 function bossDuel(i){const o=bossI(),fee=bossFee();if(!S.ws[i]||isBoss(i))return;if(!pay(fee))return;save();$('mBg').style.display='none';
  const crowd=S.ws.map((g,j)=>j).filter(j=>j!==i&&j!==o).sort(()=>Math.random()-.5);
  fightStart({a:i,b:o,title:'왕좌 쟁탈전',d:.6,crowd,onEnd:w=>{
-  if(w&&S.ws[i]){const r=S.wrole[i],sh=S.wshift[i];S.wrole[i]='b';S.wshift[i]=SFSH;S.wrest[i]=0;S.wforce[i]=0;if(o>=0){S.wrole[o]=r;S.wshift[o]=r==='m'?sh:SFSH;}sfCount();S.duelN=(S.duelN||0)+1;bossWinFx(i,o);}
+  if(w&&S.ws[i]){bswap(i,o);const r=S.wrole[i],sh=S.wshift[i];S.wrole[i]='b';S.wshift[i]=SFSH;S.wrest[i]=0;S.wforce[i]=0;if(o>=0){S.wrole[o]=r;S.wshift[o]=r==='m'?sh:SFSH;}sfCount();S.duelN=(S.duelN||0)+1;bossWinFx(i,o);}
   else{S.duelL=(S.duelL||0)+1;toast('👑 '+fnm(o)+'이(가) 사장 자리를 지켰어요');}
   save();R();}});}
 function bossWinFx(i,o){toast('👑 '+fnm(i)+' 새 사장!');if(!FXON)return;const e=$('aq');clearTimeout(aqT);e.classList.remove('on');e.classList.add('gold');
@@ -2503,8 +2509,9 @@ function carBad(x){if(x==null||!CARS[x])return;const pr=CARS[x][1],tire=Math.ran
  modal(`<h2>${tire?'🛞 타이어 탈취!':'🚓 차량 압류!'}</h2><div class="hiw">${im?`<img src="${im}" alt="">`:''}</div><div class="say">“${tire?'크큭, 이 타이어 좋은 거네. 좀 챙겨 가지.':'불법 주정차 차량입니다. 견인합니다. 벌금 내고 찾아가세요.'}”</div><p class="sub" style="margin:10px 0 0">${CARS[x][0]}의 ${tire?'타이어를 도둑맞아 교체비':'견인 벌금'} <b style="color:#ff6b6b">${W(loss)}</b>을 썼습니다.</p>`,[['어쩔 수 없지…',null,'pri']],5);}
 function carFor(x){x=+x;const c=CARS[x];if(!c)return;MFN=[];const G=fn=>{MFN.push(fn);return MFN.length-1;};
  const L=S.ws.map((g,i)=>i).sort((a,b)=>(isBoss(b)|0)-(isBoss(a)|0)||GORD.indexOf(S.ws[a])-GORD.indexOf(S.ws[b])||a-b);
- modal(`<h2>🚗 ${c[0]} <span class="tag">${W(c[1])}</span></h2><div class="pcg">${L.map(i=>{const cw=isBoss(i)?car():S.wcarOwn[i]>=0&&CARS[S.wcarOwn[i]];return `<button class="pcc" style="font:inherit;color:inherit;cursor:pointer" onclick="mGo(${G(()=>carForDo(i,x))})"><img src="${wsrc(i)}" alt="" style="box-shadow:0 0 0 2px ${GRADE[S.ws[i]].c}"><b>${isBoss(i)?'👑 ':''}${escH(eqWN(S.wimg[i]))}</b><small>${cw?cw[0]:'-'}</small></button>`;}).join('')}</div>`,[['닫기']]);}
-function carForDo(i,x){const c=CARS[x];if(!c||!S.ws[i]||!S.cars.includes(x))return;if(isBoss(i)){if(S.car===x){toast('이미 타는 차예요');return;}if(!pay(c[1]))return;S.car=x;S.cdur[x]=100;$('mBg').style.display='none';save();R();toast('🚗 👑 '+c[0]);return;}if(S.wcarOwn[i]===x){toast('이미 타는 차예요');return;}if(!pay(c[1]))return;S.wcarOwn[i]=x;S.wcarDur[i]=100;S.wcarDead[i]=0;addLoy(i,LOY_CAR);if(S.wcar.want&&!wcarWho().length){S.wcar.want=0;S.wcar.t=0;S.wcar.who=[];}$('mBg').style.display='none';save();R();toast('🚗 '+eqWN(S.wimg[i])+' · '+c[0]);}
+ modal(`<h2>🚗 ${c[0]} <span class="tag">${W(c[1])}</span></h2><div class="pcg">${L.map(i=>{const cw=isBoss(i)?car():S.wcarOwn[i]>=0&&CARS[S.wcarOwn[i]],own=isBoss(i)&&bcars().includes(x);return `<button class="pcc${own?' own':''}" style="font:inherit;color:inherit;cursor:pointer" onclick="mGo(${G(()=>carForDo(i,x))})"><img src="${wsrc(i)}" alt="" style="box-shadow:0 0 0 2px ${GRADE[S.ws[i]].c}"><b>${isBoss(i)?'👑 ':''}${escH(eqWN(S.wimg[i]))}</b><small>${own?(S.car===x?'타는 중':'👑 보유 · 타기'):cw?cw[0]:'-'}</small></button>`;}).join('')}</div>`,[['닫기']]);}
+const bcars=()=>{if(!Array.isArray(S.bcars))S.bcars=[];if(S.car>=0&&!S.bcars.includes(S.car))S.bcars.push(S.car);return S.bcars;};
+function carForDo(i,x){const c=CARS[x];if(!c||!S.ws[i]||!S.cars.includes(x))return;if(isBoss(i)){if(S.car===x){toast('이미 타는 차예요');return;}if(bcars().includes(x)){S.car=x;$('mBg').style.display='none';save();R();toast('🚗 👑 '+c[0]+' 탑승');return;}if(!pay(c[1]))return;bcars().push(x);S.car=x;S.cdur[x]=100;$('mBg').style.display='none';save();R();toast('🚗 👑 '+c[0]);return;}if(S.wcarOwn[i]===x){toast('이미 타는 차예요');return;}if(!pay(c[1]))return;S.wcarOwn[i]=x;S.wcarDur[i]=100;S.wcarDead[i]=0;addLoy(i,LOY_CAR);if(S.wcar.want&&!wcarWho().length){S.wcar.want=0;S.wcar.t=0;S.wcar.who=[];}$('mBg').style.display='none';save();R();toast('🚗 '+eqWN(S.wimg[i])+' · '+c[0]);}
 function doBuyCar(x){x=+x;if(isCarDel(x)||isCarSp(x)||S.cars.includes(x))return;if(!carUnlocked(x)){toast('🔒 앞 차를 먼저 연구해요');return;}if(S.rsq&&!ADMON){toast('🔬 '+CARS[S.rsq.x][0]+' 연구 중이에요');return;}if(!pay(carRC(x)))return;if(ADMON){S.cars.push(x);toast('🔬 '+CARS[x][0]+' 연구 완료');save();R();ACT.carInfo(x);return;}S.rsq={x,t:0,T:carRT(x)};toast('🔬 '+CARS[x][0]+' 연구 시작 · '+mmss(carRT(x)));save();R();ACT.carInfo(x);}
 
 /* ===== 누르기 ===== */
