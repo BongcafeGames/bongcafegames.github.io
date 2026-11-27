@@ -1050,6 +1050,7 @@ const GM_TR_X=1.5,GM_LOY=[0,40,50,60,70,80,90];let gmT=0;
 const gmOn=()=>{const i=gmI();return i>=0&&!isDead(i)&&!isVac(i);};
 function gmLog(s){const L=(S.gm.log=S.gm.log||[]);L.unshift(s);L.length=Math.min(L.length,6);}
 const GM_AK=[['city','🏛️ 봉생지원금'],['tr','🎓 자동 교육'],['bld','🏗️ 건물 자동 업그레이드'],['fix','🔧 차 수리 자동'],['rev','🚑 소생 자동'],['ov','🌙 철야근무 자동'],['slot','🛠️ 제작대 칸 자동 확장'],['rs','🔬 차 연구 자동'],['spB','🏗️ 건설 가속권 자동 구매'],['spR','🔬 연구 가속권 자동 구매']],GM_WP=.2;
+const gmKeep=()=>S.gm&&S.gm.keep!=null?S.gm.keep:wageAll()*4;
 const gmN=()=>S.gm?GM_AK.filter(([k])=>S.gm[k]).length+(S.gm.loy>0?1:0):0, gmWX=()=>1+GM_WP*gmN();
 function gmMore(keep){const ok=c=>S.money-keep>=c;
  if(S.gm.bld){for(const [k,lv,cost,cap,act] of [['gear',S.gear,()=>COST.gear(S.gear),upMaxK(),'gear'],['fur',S.fur.lv,()=>COST.fur(S.fur.lv),upMaxK(),'furLv'],['crLv',S.cr.lv,()=>COST.crLv(S.cr.lv),upMaxK(),'crLv'],['lg',S.lg||0,()=>COST.lg(S.lg||0),Math.min(LG_MAX,upMax()),'lgUp']]){if(bBusy(k)||lv>=cap||(k==='crLv'&&!S.cr.u))continue;const c=cost();if(ok(c)){ACT[act]();if(bBusy(k))gmLog('🏗️ '+({gear:'광산',fur:'화로',crLv:'제작공장',lg:'물류센터'})[k]+' 공사 시작 (−'+W(c)+')');}}
@@ -1064,7 +1065,7 @@ function gmMore(keep){const ok=c=>S.money-keep>=c;
  const bq=Object.keys(S.bq||{}).filter(k=>bLeft(k)>SP_S*.5);
  if(S.gm.spB&&bq.length){if(!(S.spB>0)&&ok(SP_C)){S.money-=SP_C;S.spB=1;}if(S.spB>0){const k=bq.sort((a,b)=>bLeft(a)-bLeft(b))[0];S.spB--;S.spBN=(S.spBN||0)+1;S.bq[k].end-=SP_S*1000;bqStep();gmLog('🏗️ 건설 가속권 사용 (−5분)');}}
  if(S.gm.spR&&S.rsq&&S.rsq.T-S.rsq.t>SP_S*.5){if(!(S.spR>0)&&ok(SP_C)){S.money-=SP_C;S.spR=1;}if(S.spR>0){S.spR--;S.spRN=(S.spRN||0)+1;S.rsq.t+=SP_S;rsStep(0);gmLog('🔬 연구 가속권 사용 (−5분)');}}}
-function gmStep(dt){if(!S.gm)S.gm={city:1,loy:60,tr:0,log:[]};if(!gmOn()||S.strike)return;gmT+=dt;if(gmT<5)return;gmT=0;const keep=wageAll()*4;
+function gmStep(dt){if(!S.gm)S.gm={city:1,loy:60,tr:0,log:[]};if(!gmOn()||S.strike)return;gmT+=dt;if(gmT<5)return;gmT=0;const keep=gmKeep();
  if(S.gm.city&&cityLeft()<=0){S.money+=CITY_AMT;S.cityAt=Date.now()+CITY_CD;S.cityN=(S.cityN||0)+1;S.citySum=(S.citySum||0)+CITY_AMT;gmLog('🏛️ 봉생지원금 '+W(CITY_AMT)+' 받음');}
  if(S.gm.loy>0){const it=SHOP.burger;let n=0;for(let i=0;i<S.ws.length;i++){if(isDead(i))continue;let g=0;while((S.wloy[i]??LOY_START)<S.gm.loy&&g<8){if(S.gift.burger>0)S.gift.burger--;else if(S.money-keep>=it.c)S.money-=it.c;else break;addLoy(i,it.l);g++;}if(g)n++;}if(n)gmLog('🍔 충성도 '+S.gm.loy+' 밑 직원 '+n+'명 챙김');}
  if(S.gm.tr){const i=lowIdx();if(i>=0){const c=Math.round(TRAIN[S.ws[i]].c*GM_TR_X);if(S.money-keep>=c){S.money-=c;const [ok,g,to]=trainDo(i);gmLog('🎓 '+(wNm(i)||g+'등급 직원')+' 교육 '+g+'→'+to+(ok?' 성공':' 실패')+' (−'+W(c)+')');}}}gmMore(keep);}                         /* 직원 한 명의 2.0.0 배수 = 특성 × 부서 장비 */
@@ -2679,7 +2680,7 @@ ACT.ceilGet=x=>{const f=+x;if((S.ceil||0)<CEIL||!POOLF.includes(f))return 'skip'
  return 'skip';};ACT.gmSet=()=>{gmSet();return 'skip';};
 function gmSet(){if(!S.gm)S.gm={city:1,loy:60,tr:0,log:[]};MFN=[];const B=(on,t,fn)=>{MFN.push(fn);return `<button class="btn mini ${on?'on':''}" onclick="mGo(${MFN.length-1})">${t}</button>`;},re=()=>{save();R();gmSet();};const i=gmI();
  modal(`<h2>🗂️ 총무에게 맡길 일</h2><p class="sub" style="margin:0 0 8px">${i>=0?'<b>'+escH(wNm(i)||S.ws[i]+'등급 직원')+'</b>이(가) 총무예요.':'총무가 없어요.'}</p>
- <div class="gmak">${GM_AK.map(([k,n])=>`<div class="gmr"><b>${n}</b>${B(S.gm[k],S.gm[k]?'ON':'OFF',()=>{S.gm[k]=S.gm[k]?0:1;re();})}</div>`).join('')}<div class="gmr"><b>🍔 충성도</b><input id="gmLoy" type="number" min="0" max="100" step="5" value="${S.gm.loy||0}" style="width:70px;font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--tileB);background:#0f1214;color:inherit;text-align:right" onchange="S.gm.loy=Math.max(0,Math.min(100,Math.round(+this.value||0)));save();R();gmSet();"></div></div>
+ <div class="gmak">${GM_AK.map(([k,n])=>`<div class="gmr"><b>${n}</b>${B(S.gm[k],S.gm[k]?'ON':'OFF',()=>{S.gm[k]=S.gm[k]?0:1;re();})}</div>`).join('')}<div class="gmr"><b>🍔 충성도</b><input id="gmLoy" type="number" min="0" max="100" step="5" value="${S.gm.loy||0}" style="width:70px;font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--tileB);background:#0f1214;color:inherit;text-align:right" onchange="S.gm.loy=Math.max(0,Math.min(100,Math.round(+this.value||0)));save();R();gmSet();"></div><div class="gmr"><b>💰 최소 남길 금액</b><span><input type="number" min="0" step="1" value="${Math.round(gmKeep()/10000)}" style="width:110px;font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--tileB);background:#0f1214;color:inherit;text-align:right" onchange="S.gm.keep=this.value===''?null:Math.max(0,Math.round(+this.value||0))*10000;save();R();gmSet();"> 만원</span></div></div>
  <div class="sub" style="margin:6px 0 0">💰 총무 월급 ×${trim(gmWX().toFixed(1))}</div>`,[['닫기',null,'pri']]);}
 ACT.revive=x=>{revDo(x);};ACT.reviveAll=()=>{revAll();};ACT.fixNow=x=>{fixNow(x);};
 ACT.rideCar=x=>{x=+x;if(!S.cars.includes(x))return 'skip';if(S.car===x){ACT.carInfo(x);return 'skip';}S.car=x;toast('🚗 이제 '+CARS[x][0]+'을(를) 타요');};
