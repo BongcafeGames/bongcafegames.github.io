@@ -837,7 +837,7 @@ const ITEM={
  /* 1.7.0 재료: 광산·제작소에서 안 나옴. 데이비스 환경미화에 주문하거나 직접 환경미화. 못 팖 */
  plast:{n:'플라스틱',e:'🫧',raw:1},alum:{n:'알루미늄',e:'⚪',raw:1},wood:{n:'나무',e:'🪵',raw:1},char:{n:'숯',e:'⚫',raw:1},
  /* 2.0.0: 채광 중 드롭(못 팖) */
- drillP:{n:'드릴 부품',e:'🔩',loot:1},pistolBP:{n:'피스톨 설계도',e:'📜',loot:1}};
+ drillP:{n:'드릴 부품',e:'🔩',loot:1},pistolBP:{n:'피스톨 설계도',e:'📜',loot:1},lgAq:{n:'전설의 아쿠아마린',e:'💎',loot:1}};
 const DROPS=[['coal',.20],['iron',.34],['sulfur',.10],['copper',.19],['gold',.07],['dia',.065],['sapph',.025],['aqua',.01]];
 const ORES=DROPS.map(d=>d[0]);
 /* 석탄은 나올 때 2개(50%) 또는 3개(50%) */
@@ -858,7 +858,7 @@ const RECIPE={
  ammo:{n:'총알',e:'🔫',fix:600,spd:2,out:12,m:{feI:1,char:1,suP:1},buy:[]},
  adrill:{n:'고급 드릴',e:'🛠️',fix:500000,m:{drillP:5,alum:3},buy:[]},
  pistol:{n:'피스톨',e:'🔫',fix:3000000,m:{feI:30,alum:10,plast:5,pistolBP:1},buy:[]}};
-const LOOT_K=['drillP','pistolBP'],LOOT_P={drillP:10/225,pistolBP:2/225};/* 휘두를 때(4초)마다. 교대 4조라 직원 1명 1시간 225번 → 10개·2장 */
+const LOOT_K=['drillP','pistolBP','lgAq'],LOOT_P={drillP:10/225,pistolBP:2/225,lgAq:3/225};/* 휘두를 때(4초)마다. 교대 4조라 직원 1명 1시간 225번 → 10개·2장 */
 /* 제작품 판매가 = 원가 × (1+MARGIN) (사용자 지정). 원가 = 재료값 합 + 사서 쓰는 재료값, 한 번에 여러 개 나오면 나눔.
    재료값: 주괴·보석은 NPC가, 원석은 그 주괴 NPC가(원석1+석탄1→주괴1), 석탄은 0, 다른 제작품은 그 제작품 판매가 */
 const MARGIN=.3, START_MONEY=1000000, FACE_COST=50000;{const memo={};const val=it=>RECIPE[it]?sellOf(it):PROD[it]?ITEM[PROD[it]].npc:(ITEM[it]&&ITEM[it].npc)||0;
@@ -936,7 +936,7 @@ const bossX=()=>+((1+(S.co||1))*(typeof bossMul==='function'?bossMul():1)).toFix
 const GRADE={'EX+':{p:0,x:7.5,w:75000,c:'#ffd84a'},EX:{p:0,x:6.2,w:55000,c:'#3de8ff'},'S+':{p:.002,x:5,w:40000,c:'#ff3df0'},S:{p:.008,x:4,w:30000,c:'#ff5d73'},'A+':{p:.01,x:3.2,w:22000,c:'#ff9a3d'},A:{p:.03,x:2.5,w:16000,c:'#f2c14e'},'B+':{p:.05,x:2.1,w:13000,c:'#a6e35a'},B:{p:.10,x:1.7,w:10000,c:'#4fd17a'},'C+':{p:.08,x:1.5,w:8500,c:'#4fe0d6'},C:{p:.22,x:1.3,w:7000,c:'#5cb6ff'},'D+':{p:.10,x:1.15,w:6000,c:'#c4cbc8'},D:{p:.40,x:1,w:5000,c:'#9aa3a0'}};
 const GORD=['EX+','EX','S+','S','A+','A','B+','B','C+','C','D+','D'], SEV=3;
 /* 교육: 지금 등급 → 다음 등급, c 교육비, p 성공 확률. 실패하면 교육비만 나감 */
-const TRAIN={D:{to:'D+',c:50000,p:.7},'D+':{to:'C',c:70000,p:.7},C:{to:'C+',c:150000,p:.65},'C+':{to:'B',c:200000,p:.62},B:{to:'B+',c:500000,p:.45},'B+':{to:'A',c:700000,p:.45},A:{to:'A+',c:1500000,p:.32},'A+':{to:'S',c:2000000,p:.31},S:{to:'S+',c:5000000,p:.1},'S+':{to:'EX',c:20000000,p:.05,aq:1},EX:{to:'EX+',c:50000000,p:.03,aq:2}};const TR_AQ='R_aqP',trAq=g=>(TRAIN[g]&&TRAIN[g].aq)||0,trAqOk=g=>Math.floor(S.inv[TR_AQ]||0)>=trAq(g);
+const TRAIN={D:{to:'D+',c:50000,p:.7},'D+':{to:'C',c:70000,p:.7},C:{to:'C+',c:150000,p:.65},'C+':{to:'B',c:200000,p:.62},B:{to:'B+',c:500000,p:.45},'B+':{to:'A',c:700000,p:.45},A:{to:'A+',c:1500000,p:.32},'A+':{to:'S',c:2000000,p:.31},S:{to:'S+',c:5000000,p:.1},'S+':{to:'EX',c:20000000,p:.05,aq:1},EX:{to:'EX+',c:50000000,p:.03,aq:2}};const TR_AQ='lgAq',trAq=g=>(TRAIN[g]&&TRAIN[g].aq)||0,trAqOk=g=>Math.floor(S.inv[TR_AQ]||0)>=trAq(g);
 const lowIdx=()=>{for(const g of GORD.slice().reverse()){if(!TRAIN[g]||!trAqOk(g))continue;const i=S.ws.findIndex((x,j)=>x===g&&!isBoss(j)&&!isVac(j));if(i>=0)return i;}return -1;};
 function trainDo(i){const g=S.ws[i],t=TRAIN[g];if(t.aq)S.inv[TR_AQ]=(S.inv[TR_AQ]||0)-t.aq;const ok=Math.random()<t.p;if(ok)S.ws[i]=t.to;else S.trainF=(S.trainF||0)+1;S.trainN=(S.trainN||0)+1;return [ok,g,t.to];}
 /* 1.6.0 베타: 그냥 고용(🎫 D급 티켓)은 D등급 고정. 좋은 등급은 ⭐ 스카우트(뽑기)로 */
@@ -2370,7 +2370,7 @@ function sfMenu(k,i){const a=sfA(k),o=a&&a[i];if(!o)return;MFN=[];const fat=Math
  `;
  h+=`<div class="sact" style="grid-template-columns:repeat(3,minmax(0,1fr))">${B('✏️','이름 짓기',()=>nameAsk(k+':'+i))}${B('📒','직원 도감',imgEditor)}${B('👋','내보내기',()=>fireAsk(k,i),'퇴직금 '+W(wg*SEV))}</div>`;
  modal(h,[['닫기',null,'pri']]);}
-function trainAsk(i){i=+i;const g=S.ws[i],t=TRAIN[g];if(!t)return;if(!trAqOk(g)){toast('🌟 최상급 아쿠아마린 '+(trAq(g)-Math.floor(S.inv[TR_AQ]||0))+'개 모자라요');return;}if(!pay(t.c))return;const [ok,,to]=trainDo(i);save();R();trainFx(i,g,to,()=>trainRes(i,g,t,ok,to));}
+function trainAsk(i){i=+i;const g=S.ws[i],t=TRAIN[g];if(!t)return;if(!trAqOk(g)){toast('💎 전설의 아쿠아마린 '+(trAq(g)-Math.floor(S.inv[TR_AQ]||0))+'개 모자라요');return;}if(!pay(t.c))return;const [ok,,to]=trainDo(i);save();R();trainFx(i,g,to,()=>trainRes(i,g,t,ok,to));}
 /* 1.4.3 교육 중 모션(봉다방처럼): 얼굴 둘레 점선 고리가 돌고 📚✏️💡📝가 튀어 오르고, 등급 바가 1.7초 동안 참. 결과는 교육을 누를 때 이미 정해짐 */
 const TRFX_MS=1700;
 function trainFx(i,g,to,done){if(!FXON){done();return;}const nm=wNm(i)?escH(wNm(i)):g+'등급 '+wJob(i),gc=GRADE[g].c,gn=GRADE[to].c;
