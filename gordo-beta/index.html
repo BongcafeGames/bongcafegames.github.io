@@ -1067,11 +1067,13 @@ const sellK=()=>SELL_K[Math.min(Math.max(0,(S.co||1)-1),SELL_K.length-1)],dlvK=(
 const foAuto=k=>!!(S.foA&&S.foA[k]);
 function foAutoSet(){if(!S.foAV){S.foAV=1;S.foA=S.fo.map(()=>1);}if(!Array.isArray(S.foA))S.foA=[];const A=S.fo.map((o,k)=>k).filter(foAuto);if(!A.length)return;const ord=Object.keys(PROD).filter(x=>have(x)>=1&&cap()-have(PROD[x])>=1).sort((a,b)=>have(b)-have(a));if(!ord.length)return;A.forEach((k,j)=>{S.fo[k]=ord[j%ord.length];});}
 const foAlt=tr=>{if(have('coal')<1)return null;let b=null,bv=1;for(const x in PROD)if(!tr.includes(x)&&have(x)>=bv&&cap()-have(PROD[x])>=1){b=x;bv=have(x);}return b;};
+const upMaxK=()=>(S.co||1)>=CO_MAX?1e9:upMax();
+const furK=l=>{const n=FUR_K.length;return l<n?FUR_K[l]:FUR_K[n-1]*(1+l)/n;},crK=l=>{const n=CR_K.length;return l<n?CR_K[l]:CR_K[n-1]*(1+.5*l)/(1+.5*(n-1));};
 const upMax=()=>Math.max(0,(S.co||1)-1),slotMax=()=>Math.min(CR_MAX,S.co||1);
 function upCapd(l,m){m=m??upMax();if(admNoCap()||l<m)return false;toast('🏢 회사 '+S.co+'레벨에서는 '+(m+1)+'단계까지 올릴 수 있어요');return true;}
 function upClamp(){const m=upMax();let r=0;const cut=(cur,mx,fn)=>{let v=0;for(let l=mx;l<cur;l++)v+=fn(l);r+=v;return Math.min(cur,mx);};
  if(admNoCap())return;
- if(S.gear>m)S.gear=cut(S.gear,m,COST.gear);if(S.fur&&S.fur.lv>m)S.fur.lv=cut(S.fur.lv,m,COST.fur);if(S.cr&&S.cr.lv>m)S.cr.lv=cut(S.cr.lv,m,COST.crLv);
+ const mk=upMaxK();if(S.gear>mk)S.gear=cut(S.gear,mk,COST.gear);if(S.fur&&S.fur.lv>mk)S.fur.lv=cut(S.fur.lv,mk,COST.fur);if(S.cr&&S.cr.lv>mk)S.cr.lv=cut(S.cr.lv,mk,COST.crLv);
  if((S.lgL||0)>m)S.lgL=cut(S.lgL,m,COST.lgL);if((S.lgE||0)>m)S.lgE=cut(S.lgE,m,COST.lgE);if((S.lg||0)>m)S.lg=cut(S.lg,m,COST.lg);
  if(S.cr&&S.cr.slots.length>slotMax()){for(let k=slotMax();k<S.cr.slots.length;k++)r+=COST.crSlot(k);S.cr.slots.length=slotMax();}
  if(r>0){S.money+=r;toast('🏢 업그레이드는 회사 레벨까지만 돼요. 넘친 단계 값 '+W(r)+'을 돌려드렸어요');}}
@@ -1699,14 +1701,14 @@ const failP=()=>Math.max(.1,FAIL0-.01*(S.co-1));
 /* 강화 목록: 버튼과 관리인이 같이 씀 */
 const UPG={
  hire:{n:'채굴 알바 고용',cost:()=>COST.worker(nW()),can:()=>false,run:()=>{const g=rollGrade();wPush(g);return g+'등급';}},
- gear:{n:'알바 곡괭이 강화',cost:()=>COST.gear(S.gear),can:()=>S.gear<upMax(),run:()=>{S.gear++;}},
+ gear:{n:'알바 곡괭이 강화',cost:()=>COST.gear(S.gear),can:()=>S.gear<upMaxK(),run:()=>{S.gear++;}},
  co:{n:'회사 승급',cost:()=>COST.co(S.co),can:()=>S.co<CO_MAX,run:()=>{S.co++;}},
  train:{n:'알바 교육',cost:()=>TRAIN[S.ws[lowIdx()]].c,can:()=>lowIdx()>=0,run:()=>{const [ok,g,to]=trainDo(lowIdx());return g+'→'+to+(ok?' 성공':' 실패');}},
  hireS:{n:'판매 직원 고용',cost:()=>COST.sworker(S.sw),can:()=>false,run:()=>{const g=rollGrade();wPush(g,'s');return g+'등급';}},
  hireF:{n:'주조 직원 고용',cost:()=>COST.fworker(S.fw||0),can:()=>false,run:()=>{const g=rollGrade();wPush(g,'f');return g+'등급';}},
  furBuy:{n:'화로 구매',cost:()=>COST.furBuy(S.furN),can:()=>S.furN<furMax(),run:()=>{S.furN++;foFix();}},
- fur:{n:'화로 강화',cost:()=>COST.fur(S.fur.lv),can:()=>S.fur.lv<upMax(),run:()=>{S.fur.lv++;}},
- crLv:{n:'작업대 강화',cost:()=>COST.crLv(S.cr.lv),can:()=>!!S.cr.u&&S.cr.lv<upMax(),run:()=>{S.cr.lv++;}},
+ fur:{n:'화로 강화',cost:()=>COST.fur(S.fur.lv),can:()=>S.fur.lv<upMaxK(),run:()=>{S.fur.lv++;}},
+ crLv:{n:'작업대 강화',cost:()=>COST.crLv(S.cr.lv),can:()=>!!S.cr.u&&S.cr.lv<upMaxK(),run:()=>{S.cr.lv++;}},
  crSlot:{n:'제작 슬롯 추가',cost:()=>COST.crSlot(S.cr.slots.length),can:()=>!!S.cr.u&&S.cr.slots.length<slotMax(),run:()=>{S.cr.slots.push({k:'',p:0,auto:1});}}};
 const DIRS={all:{n:'알아서',d:'본전 빨리 뽑는 것부터',u:Object.keys(UPG).filter(k=>k!=='train')},mine:{n:'채굴 우선',d:'알바 고용, 곡괭이, 회사 승급',u:['hire','gear','co']},
  make:{n:'가공 우선',d:'화로 구매·강화, 주조 직원, 작업대',u:['furBuy','hireF','fur','crLv','crSlot']},sell:{n:'판매 우선',d:'판매 직원, 회사 승급',u:['hireS','co']},off:{n:'쉬기',d:'아무것도 사지 않음',u:[]}};
@@ -1758,7 +1760,7 @@ let mgrDid=false;
 const faN=o=>(S.fa&&S.fa[o])||0, faSum=()=>Object.values(S.fa||{}).reduce((a,b)=>a+b,0);
 const furOrder=()=>FUR_ORDER.slice().sort((a,b)=>faN(b)-faN(a)||FUR_ORDER.indexOf(a)-FUR_ORDER.indexOf(b));
 function faFix(){let over=faSum()-(S.fw||0);for(const o of FUR_ORDER.slice().reverse()){while(over>0&&faN(o)>0){S.fa[o]--;over--;}}}
-const furBatch=()=>1+(S.strike?0:Math.round(S.fo.map((o,k)=>furW(k)).filter((i,k)=>i!=null&&S.fo[k]&&sfOn(i)).reduce((a,i)=>a+sfP1(i),0)*ovX()*10)/10), furT=()=>2/FUR_K[Math.min(S.fur.lv,FUR_K.length-1)], furRate=()=>furBatch()/furT(), crRate=()=>CR_K[Math.min(S.cr.lv,CR_K.length-1)]/32;
+const furBatch=()=>1+(S.strike?0:Math.round(S.fo.map((o,k)=>furW(k)).filter((i,k)=>i!=null&&S.fo[k]&&sfOn(i)).reduce((a,i)=>a+sfP1(i),0)*ovX()*10)/10), furT=()=>2/furK(S.fur.lv), furRate=()=>furBatch()/furT(), crRate=()=>crK(S.cr.lv)/32;
 const have=it=>S.inv[it]||0;
 const autoOn=it=>false;
 const got=(it,n)=>{S.got[it]=(S.got[it]||0)+n;};
@@ -2577,19 +2579,19 @@ const ACT={
  upCo(){if(S.co<CO_MAX&&coPay()){S.co++;toast('🏢 회사가 '+S.co+'레벨이 됐습니다! 창고 '+F(capBase())+'개 · 채굴 알바 최대 '+wCapL(S.co)+'명');}},
  fireS(x){fireAsk('s',x==null?(S.sw-1):x);return 'skip';},stfS(x){workerMenu(+x);return 'skip';},roleSet(x){const [i,r]=String(x).split(':');roleSet(+i,r);if(S.ws[+i])workerMenu(+i);return 'skip';},stfF(x){workerMenu(+x);return 'skip';},
  info(x){const it=ITEM[x],g=S.got[x]>0;modal(`<h2>${g||!it.rare?it.n:'???'}</h2><div style="display:flex;gap:14px;align-items:center"><span class="ic" style="width:96px;height:96px;font-size:48px">${it.e}${IMG[it.n]?`<img src="${IMG[it.n]}" alt="">`:''}</span><p style="margin:0">${it.npc?'판매가 '+W(it.npc)+'<br>피버가 '+W(feverPrice(x))+'<br>':(x==='coal'?'화로의 연료':x==='wood'?'재료: 지도 ⚓ 항구에서 사요(🚚 배송팀이 받으러 가요). 🔥 화로에서 ⚫ 숯으로 구워요. 못 팔아요':x==='char'?'재료: 🔥 화로에서 🪵 나무를 구워 만들어요(석탄 필요 없음). 🔫 총알에 들어가요. 못 팔아요':it.raw?'재료: 광산 › 🚚 배송 탭에서 데이비스 환경미화에 주문하거나 직접 환경미화로 구해요. 전자제어부품·전자탐지기에 들어가요. 못 팔아요':'원석: 화로에서 가공하면 '+ITEM[PROD[x]].n)+' (팔 수 없음)<br>'}지금 ${F(have(x))}개<br>지금까지 얻은 수 ${F(S.got[x]||0)}개</p></div>${it.rare?`<p class="sub" style="margin-top:10px">화로에서 제품을 만들 때 ${RARE_P*100}% 확률로 나옵니다.</p>`:''}${have(x)>=1?`<div class="dropr"><span class="sub">🗑️ 버리기</span>${[1,10,100].filter(n=>n<have(x)).map(n=>`<button class="btn mini" onclick="dropIt('${x}',${n})">${n}개</button>`).join('')}<button class="btn mini" onclick="dropIt('${x}',-1)">전부 (${F(have(x))}개)</button></div>`:''}`);return 'skip';},
- gear(){if(upCapd(S.gear))return;if(pay(COST.gear(S.gear)))S.gear++;},
+ gear(){if(upCapd(S.gear,upMaxK()))return;if(pay(COST.gear(S.gear)))S.gear++;},
  sell(x){const n=Math.floor(have(x));if(n<1)return;S.inv[x]-=n;toast(ITEM[x].n+' '+F(n)+'개 판매 +'+W(gain(n*price(x))));},
  sellAll(){let v=0;for(const k of SELLS.concat(RARES))if(!S.lock[k]){const n=Math.floor(have(k));v+=n*price(k);S.inv[k]=have(k)-n;}if(v)toast((S.fever>0?'🔥 피버 판매 +':'모두 판매 +')+W(gain(v)));else toast('팔 것이 없습니다');},
  lock(x){S.lock[x]=S.lock[x]?0:1;},
  furOn(x){S.fur.on[x]=S.fur.on[x]?0:1;},
- furLv(){if(upCapd(S.fur.lv))return;if(pay(COST.fur(S.fur.lv)))S.fur.lv++;},
+ furLv(){if(upCapd(S.fur.lv,upMaxK()))return;if(pay(COST.fur(S.fur.lv)))S.fur.lv++;},
  buyCr(){if(pay(COST.crafter)){S.cr.u=1;if(!S.cr.slots.length)S.cr.slots.push({k:'ecu',p:0});}},
  crPick(x){const i=+x,sl=S.cr.slots[i];if(!sl)return 'skip';
   modal(`<h2>🛠️ ${i+1}번 칸에서 만들 것</h2><div class="wcl"><div class="wcrow"><span class="ic big">🔄</span><div class="grow"><b>자동</b></div>${sl.auto?'<button class="btn on">자동 중</button>':`<button class="btn pri" data-a="crAuto" data-x="${i}">고르기</button>`}</div>${CRAFTS.map(k=>{const r=RECIPE[k],on=!sl.auto&&sl.k===k;return `<div class="wcrow">${ic(k)}<div class="grow"><b>${r.n}</b>${r.spd>1?' <span class="tag">'+r.spd+'배 빠름</span>':''}${r.out>1?' <span class="tag">한 번에 '+r.out+'개</span>':''}<br><span class="sub">개당 ${W(r.sell)} (재료값 ${W(r.cost)}) · 재료 ${Object.entries(r.m).map(([it,q])=>ITEM[it].n+' '+q).join(', ')}${Object.keys(r.m).some(it=>ITEM[it].raw)?' · 🫧⚪ 재료는 🚚 배송 탭에서 주문':''}</span></div>${on?'<button class="btn on">만드는 중</button>':`<button class="btn pri" data-a="crSet" data-x="${i}:${k}">고르기</button>`}</div>`;}).join('')}</div>`,[...(sl.k?[['비워 두기',()=>{sl.k='';sl.auto=0;sl.p=0;save();R();}]]:[]),['닫기']]);return 'skip';},
  crAuto(x){const sl=S.cr.slots[+x];if(!sl)return 'skip';sl.auto=1;$('mBg').style.display='none';toast('🛠️ '+(+x+1)+'번 칸: 🔄 자동');},
  crSet(x){const [a,k]=String(x).split(':'),sl=S.cr.slots[+a];if(!sl||!RECIPE[k])return 'skip';sl.k=k;sl.auto=0;sl.p=0;$('mBg').style.display='none';toast('🛠️ '+(+a+1)+'번 칸: '+RECIPE[k].n);},
  crSlot(){if(upCapd(S.cr.slots.length-1,slotMax()-1))return;if(S.cr.slots.length<CR_MAX&&pay(COST.crSlot(S.cr.slots.length)))S.cr.slots.push({k:'',p:0,auto:1});},
- crLv(){if(upCapd(S.cr.lv))return;if(pay(COST.crLv(S.cr.lv)))S.cr.lv++;},
+ crLv(){if(upCapd(S.cr.lv,upMaxK()))return;if(pay(COST.crLv(S.cr.lv)))S.cr.lv++;},
  wFixAll(){const L=brokeW();const c=L.reduce((a,i)=>a+wFixCost(i),0);if(!L.length)return 'skip';if(!pay(c))return 'skip';for(const i of L){S.wcarDur[i]=100;S.wcarDead[i]=0;addLoy(i,LOY_FIX);}toast('🔧 직원 차 '+L.length+'대 수리 완료 (충성도 +'+LOY_FIX+'씩)');},
  bFix(x){x=+x;const c=fixCost(x,bDur(x));if(c<=0||!pay(c))return 'skip';S.cdur[x]=100;toast('🔧 '+CARS[x][0]+' 수리 완료');},
  sellCar(x){x=+x;const c=CARS[x];if(!S.cars.includes(x))return 'skip';const v=Math.floor(c[1]*SELL_X);
