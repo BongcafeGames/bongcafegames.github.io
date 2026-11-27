@@ -949,7 +949,7 @@ function rollScout(){let r=Math.random()*100;for(const g of [...GORD].reverse())
 /* 성급(봉다방과 같은 방식): 얼굴(캐릭터)마다 ★0~5. 이미 있는 직원이 또 나오면 등급과 상관없이 조각 2개(등급은 안 바뀜). 조각 2/3/4/6/8개로 돌파 */
 const STAR_X=[1,1.2,1.45,1.75,2.1,2.5],STAR_PC=[30,60,100,150,200],STAR_MAX=5,DUP_PC=2;
 /* 2.0.0c: 중복으로 뽑히면 D+ ~ 지금 등급 사이에서 등급이 뜨고(스카우트 확률 비율), 뜬 등급만큼 전용 조각 + 그 10% 통용 조각(S.cpc). 통용 10개 = 아무 직원 전용 조각 1개 */
-const PC_G={D:80,'D+':100,C:130,'C+':170,B:220,'B+':300,A:420,'A+':600,S:840,'S+':1260,EX:1800,'EX+':2600},CPC_R=.1,CPC_X=10;
+const PC_G0={D:80,'D+':100,C:130,'C+':170,B:220,'B+':300,A:420,'A+':600,S:840,'S+':1260,EX:1800,'EX+':2600},PC_G={D:10,'D+':12,C:16,'C+':21,B:27,'B+':37,A:52,'A+':75,S:105,'S+':157,EX:225,'EX+':325},CPC_R=.1,CPC_X=10;
 function dupG(cur){const a=GORD.indexOf(cur),b=GORD.indexOf('D+'),L=a>=b?[cur]:GORD.slice(a,b+1);let r=Math.random()*L.reduce((s,g)=>s+SC_P[g],0);for(const g of L){r-=SC_P[g];if(r<=0)return g;}return L[L.length-1];}
 const fst=f=>{if(!S.fst)S.fst={};return S.fst[f]||(S.fst[f]={s:0,pc:0});};
 const stOf=i=>(S.fst&&S.fst[S.wimg[i]]&&S.fst[S.wimg[i]].s)||0, starX=i=>STAR_X[stOf(i)];
@@ -2172,7 +2172,7 @@ const totMax=()=>wMax()+sMax()+fMax()+cMax()+dMax()+pMax(),isLup=i=>S.wshift&&S.
 function scRoom(){return totRoom()?'w':'';}  /* 2.0.0b: 새로 온 직원은 모두 📋 대기로 */
 function scoutPull(n){const out=[];for(let k=0;k<n;k++){const room=scRoom(),own=S.wimg.slice(),pool=[];for(const f of POOLF)if(room||own.includes(f))pool.push(f);
   const f=pool[Math.floor(Math.random()*pool.length)],j=S.wimg.indexOf(f);S.scoutN=(S.scoutN||0)+1;
-  if(j>=0){const g=dupG(S.ws[j]),pc=PC_G[g],cp=Math.max(1,Math.round(pc*CPC_R));fst(f).pc+=pc;S.cpc=(S.cpc||0)+cp;S.cpcN=(S.cpcN||0)+cp;out.push({f,g,dup:1,pc,cp});}
+  if(j>=0){const g=dupG(S.ws[j]),pc=PC_G[g],cp=Math.max(1,Math.round(PC_G0[g]*CPC_R));fst(f).pc+=pc;S.cpc=(S.cpc||0)+cp;S.cpcN=(S.cpcN||0)+cp;out.push({f,g,dup:1,pc,cp});}
   else{const g=rollScout();S.rcN=(S.rcN||0)+1;if(!staff()){S.payT=0;S.strike=0;}wPush(g,room);S.wimg[S.wimg.length-1]=f;sfCount();out.push({f,g,nw:1,r:room});}}
  if(n===10){const nw=out.filter(o=>o.nw);if(nw.length&&!nw.some(o=>GORD.indexOf(o.g)<=GORD.indexOf('B+'))){const o=nw[nw.length-1],j=S.wimg.indexOf(o.f);if(j>=0){S.ws[j]='B+';o.g='B+';o.pity=1;}}}
  return out;}
